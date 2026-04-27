@@ -52,7 +52,9 @@ impl Emitter {
         // Infer return type from body: look for Ok/Fail nodes
         let ret = infer_return(body);
 
-        let mut out = format!("{}pub fn {}({}) -> {} {{\n", self.pad(), name, param_str, ret);
+        let is_async = body.iter().any(|n| has_fetch(n));
+        let async_kw = if is_async { "async " } else { "" };
+        let mut out = format!("{}pub {}fn {}({}) -> {} {{\n", self.pad(), async_kw, name, param_str, ret);
         self.indent += 1;
         for n in body {
             let line = self.emit(n);
@@ -202,6 +204,12 @@ impl Emitter {
 }
 
 // ── Helpers ───────────────────────────────────────────────────
+
+fn has_fetch(node: &Node) -> bool {
+    let mut found = false;
+    node.walk(&mut |n| { if matches!(n, Node::Fetch { .. }) { found = true; } });
+    found
+}
 
 fn split_source(source: &str) -> (String, String) {
     // "db/users"      → ("db", "users::get")

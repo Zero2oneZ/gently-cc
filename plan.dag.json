@@ -94,7 +94,7 @@
       ],
       "task_cid": "sha256:9c2bd524a552544f796ab69519e0a804bc97f6018fa972778fd08d732e1c0196",
       "output_cid": null,
-      "claimed_by": null,
+      "claimed_by": "GREG",
       "completed": false
     },
     "A.2.2": {

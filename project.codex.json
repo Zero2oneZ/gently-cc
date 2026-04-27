@@ -2,7 +2,7 @@
   "version": "1",
   "project": "gently-cc",
   "project_id": "a3f91bc2e47d58f0",
-  "root_cid": "sha256:741b4b4fae9baee4e6946655999fa997539fab5330a8e03c302a9de9f914512c",
+  "root_cid": "sha256:d8854f5d6a961f8d3a9d009c87e4f980bc20631c911f3113e6520ff9f2e79cad",
   "chain_anchor": null,
   "files": {
     "src/install.js": {
@@ -45,7 +45,7 @@
       "source": "static",
       "role": "UserPromptSubmit — CODIE compress + BARF inject + anomaly detection",
       "spec_cid": null,
-      "output_cid": "sha256:3e58404a1562bf7f72fa015804f658bfdb665dd39568b75cd6559e4db8161027"
+      "output_cid": "sha256:136cf2f3d0968665fcb60b05479bb56696d8c849be69ffe4936551b237ee8e12"
     },
     "hooks/session-start.js": {
       "source": "static",
@@ -81,7 +81,7 @@
       "source": "static",
       "role": "AST → deterministic Rust source (determinism verified 2026-04-27)",
       "spec_cid": null,
-      "output_cid": "sha256:abb9fd929dda60f2bfb66d9468deb7d2bd4b0f5c2033ec08e9fc8e6e0ee1a763"
+      "output_cid": "sha256:9e9573e6979c9c867216deb8cc9a76ffbbd642491c807b7e88a0861cf3fbef64"
     },
     "gently-codegen/src/templates.rs": {
       "source": "static",
@@ -91,19 +91,19 @@
     }
   },
   "generated_targets": {
-    "gently-codegen/examples/crud_user.rs": {
+    "gently-codegen/fixtures/crud_user.rs": {
       "source": "generated",
       "spec": "κ[crud] ε[name:User]",
       "generator": "gen --template crud User",
       "spec_cid": "sha256:1631707d1c3647c0661f10cf239ff69fa1ce4e7490cf429eae1597cc16d9eb11",
-      "output_cid": "sha256:8a2c517dd9b805aee39ecbd670fb8abddd35f1ac942aea737df311f929845519"
+      "output_cid": "sha256:630a3b98f0d0e195c4e5cb2807beb0e32ec3af683219c4e868544ec70b0c60f5"
     },
-    "gently-codegen/examples/api_agent.rs": {
+    "gently-codegen/fixtures/api_agent.rs": {
       "source": "generated",
       "spec": "κ[api] ε[name:Agent]",
       "generator": "gen --template api Agent",
       "spec_cid": "sha256:98d694f46d815005388c169db8f9885280611177a3628ad32ec3293bf0ab5430",
-      "output_cid": "sha256:a1fd6a782780e7965434521badd1ade4b041b5664ba83adf3239d35e238793cc"
+      "output_cid": "sha256:d217d776446b8e0ec2b038d11b8d8225edad2a2b8ed4340ab1b86b4a9dcca312"
     }
   },
   "skills": {
