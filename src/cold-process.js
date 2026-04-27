@@ -50,6 +50,21 @@ export function resetState() {
   _slotRing      = []
 }
 
+/**
+ * Serialize ring state for cross-process persistence.
+ * Each hook invocation is a new process — serialize after classify(), restore before.
+ */
+export function getState() {
+  return { slotRing: [..._slotRing], lastScopeId: _lastScopeId, lastLocalPath: _lastLocalPath }
+}
+
+/** Restore previously serialized state. */
+export function setState(s) {
+  if (Array.isArray(s.slotRing))        _slotRing      = s.slotRing
+  if (s.lastScopeId   !== undefined)    _lastScopeId   = s.lastScopeId
+  if (s.lastLocalPath !== undefined)    _lastLocalPath = s.lastLocalPath
+}
+
 // ── Internals ─────────────────────────────────────────────────────────────────
 
 function _classify(snap) {

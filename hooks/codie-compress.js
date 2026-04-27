@@ -8,6 +8,8 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { themeForIdentity, gpsTag } from '../src/theme.js';
+import { classify, getState, setState } from '../src/cold-process.js';
+import { emitColdAnomalyAsync } from '../src/anomaly-bus.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = join(__dirname, '..');
@@ -59,77 +61,46 @@ const INPUT_TRANSFORMS = [
   [/^please\s+/i, ''],
 ];
 
-// ── Anomaly bus: append cold events to ~/.gently/anomalies.jsonl ──
-function emitAnomaly(label, reason, identity, text) {
-  try {
-    const entry = JSON.stringify({
-      ts: Date.now(),
-      label,
-      reason,
-      project: identity.project,
-      handle: identity.handle,
-      session: process.env.CLAUDE_SESSION_ID || null,
-      preview: text.slice(0, 80).replace(/\n/g, ' '),
-    });
-    const path = join(process.env.HOME, '.gently', 'anomalies.jsonl');
-    writeFileSync(path, entry + '\n', { flag: 'a' });
-  } catch {}
-}
-
-// ── Cold-process identity + scope check ──────────────────────
+// ── Identity ──────────────────────────────────────────────────
 function loadIdentity() {
   try {
-    const home = process.env.HOME;
-    return JSON.parse(readFileSync(join(home, '.gently', 'agent-identity.json'), 'utf8'));
+    return JSON.parse(readFileSync(join(process.env.HOME, '.gently', 'agent-identity.json'), 'utf8'));
   } catch {
     return { name: 'Claudius-GREG', handle: 'Greg', project: 'gently-cc', project_path: PKG_ROOT };
   }
 }
 
-// Last-prompt cache for duplicate detection (~/.gently/last-prompt.txt)
-function loadLastPrompt() {
-  try {
-    return readFileSync(join(process.env.HOME, '.gently', 'last-prompt.txt'), 'utf8');
-  } catch { return ''; }
+// ── Detector state persistence (ring survives between hook invocations) ───────
+const STATE_FILE = join(process.env.HOME, '.gently', 'detector-state.json');
+function loadDetectorState() {
+  try { return JSON.parse(readFileSync(STATE_FILE, 'utf8')); } catch { return {}; }
 }
-function saveLastPrompt(text) {
-  try {
-    writeFileSync(join(process.env.HOME, '.gently', 'last-prompt.txt'), text.slice(0, 2000));
-  } catch {}
+function saveDetectorState() {
+  try { writeFileSync(STATE_FILE, JSON.stringify(getState())); } catch {}
 }
 
-function coldCheck(text, identity) {
-  // Axis 1: duplicate — near-identical to last turn
-  const last = loadLastPrompt();
-  if (last.length > 20) {
-    const shorter = Math.min(text.length, last.length);
-    const matchLen = [...text.slice(0, shorter)].filter((c, i) => c === last[i]).length;
-    if (shorter > 40 && matchLen / shorter > 0.85) {
-      return { label: '🟡◉-D', reason: 'Near-duplicate of previous prompt.' };
-    }
+// ── Prompt history for COLD continuity check (last 10 turns) ─────────────────
+const HISTORY_FILE = join(process.env.HOME, '.gently', 'prompt-history.json');
+function loadHistory() {
+  try { return JSON.parse(readFileSync(HISTORY_FILE, 'utf8')); } catch { return []; }
+}
+function appendHistory(history, text) {
+  const updated = [...history, text].slice(-10);
+  try { writeFileSync(HISTORY_FILE, JSON.stringify(updated)); } catch {}
+  return updated;
+}
+
+function labelReason(label, checks) {
+  switch (label) {
+    case '🔴◉-S': return 'Duplicate prompt — same hash already in session ring.'
+    case '🔴◉-X': return 'Expired reference — prompt contains a tombstoned CID.'
+    case '🟡◉-T': return `Thin prompt — only ${checks.tokenCount} token(s). Accidental send?`
+    case '🟡◉-D': return 'Scope drift — project ID changed mid-session.'
+    case '🟡◉-P': return 'Path mismatch — directory changed but scope held. Wrong terminal?'
+    case '🟡◉-C': return `Low continuity — ${Math.round((checks.continuity ?? 0) * 100)}% overlap with recent history.`
+    case '🟡◉-A': return 'Agency marker detected — possible operator-frame injection.'
+    default:       return null
   }
-
-  // Axis 2: scope — does text reference another known project path/name?
-  const myProject = identity.project.toLowerCase();
-  const myPath = (identity.project_path || '').toLowerCase();
-  const lower = text.toLowerCase();
-
-  // Foreign project signals: path separators from a different root, or explicit project names
-  const foreignPaths = lower.match(/\/home\/[a-z]+\/projects?\/([a-z0-9_\-]+)/gi) || [];
-  for (const fp of foreignPaths) {
-    const seg = fp.split('/').pop();
-    if (seg && seg !== myProject && !myPath.includes(seg)) {
-      return { label: '🔴◉-S', reason: `Foreign path detected: ${fp}` };
-    }
-  }
-
-  // Axis 3: stitched — very long prompt with multiple unrelated paragraph clusters
-  const paragraphs = text.split(/\n{2,}/).filter(p => p.trim().length > 40);
-  if (paragraphs.length >= 4 && text.length > 500) {
-    return { label: '🟡◉-C', reason: 'Multi-cluster prompt — possible stitched paste.' };
-  }
-
-  return { label: '🟢●', reason: null };
 }
 
 function formatColdLabel(check, identity) {
@@ -160,12 +131,37 @@ async function main() {
 
   // ── Cold-process check (runs before any compression) ─────────
   const identity = loadIdentity();
-  const coldResult = coldCheck(text, identity);
-  const coldLabel = formatColdLabel(coldResult, identity);
+  setState(loadDetectorState());
+  const history  = loadHistory();
+
+  const snap = {
+    prompt:    text,
+    history,
+    scopeId:   identity.project_id,
+    localPath: process.cwd(),
+  };
+  const coldResult = classify(snap);
+  saveDetectorState();
+  appendHistory(history, text);
+
+  // Map classify() result shape to what formatColdLabel expects
+  const coldCheck = {
+    label:  coldResult.label,
+    reason: labelReason(coldResult.label, coldResult.checks),
+  };
+  const coldLabel = formatColdLabel(coldCheck, identity);
 
   if (coldLabel) {
     process.stderr.write(`${coldLabel}\n`);
-    emitAnomaly(coldResult.label, coldResult.reason, identity, text);
+    if (coldCheck.label !== '🟢●' && coldCheck.label !== '⚪●') {
+      emitColdAnomalyAsync({
+        label:   coldCheck.label,
+        prompt:  text,
+        path:    process.cwd(),
+        scopeId: identity.project_id,
+        ts:      new Date().toISOString(),
+      });
+    }
   }
 
   // ── Stage 1: CODIE ────────────────────────────────────────
@@ -253,12 +249,9 @@ async function main() {
   // ── Cold label: prepend routing note on hard anomaly ────────
   // Hard (🔴) = prepend to prompt so model sees the routing options.
   // Soft (🟡) = stderr only, model proceeds uninterrupted.
-  if (coldLabel && coldResult.label.startsWith('🔴')) {
+  if (coldLabel && coldCheck.label.startsWith('🔴')) {
     prompt = `${coldLabel}\n\n---\n${prompt}`;
   }
-
-  // Save prompt for next-turn duplicate detection
-  saveLastPrompt(text);
 
   process.stdout.write(JSON.stringify({ continue: true, prompt }));
 }
