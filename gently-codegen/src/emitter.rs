@@ -17,10 +17,13 @@ impl Emitter {
             Node::Fetch  { source, key }              => self.emit_fetch(source, key),
             Node::Bind   { name, ty, value }          => self.emit_bind(name, ty, value),
             Node::Cond   { pred, then, else_ }        => self.emit_cond(pred, then, else_),
-            Node::Return { value }                    => format!("{}return {};", self.pad(), self.emit(value)),
+            Node::Return { value }                    => match value.as_ref() {
+                Node::Fail { .. } => self.emit(value),  // Fail already includes return
+                _ => format!("{}return {};", self.pad(), self.emit(value)),
+            },
             Node::Loop   { iter, body }               => self.emit_loop(iter, body),
             Node::Fail   { reason }                   => format!("{}return Err({}.into());", self.pad(), reason),
-            Node::Ok     { value }                    => format!("{}Ok({})", self.pad(), self.emit(value)),
+            Node::Ok     { value }                    => format!("Ok({})", self.emit(value)),
             Node::Pipe   { steps }                    => self.emit_pipe(steps),
             Node::Flow   { from, to, label }          => self.emit_flow(from, to, label),
             Node::Not    { inner }                    => format!("!{}", self.emit(inner)),
@@ -54,8 +57,13 @@ impl Emitter {
         for n in body {
             let line = self.emit(n);
             if !line.trim().is_empty() {
-                out.push_str(&line);
-                if !line.trim_end().ends_with(';') && !line.trim_end().ends_with('}') {
+                let padded = if line.starts_with(' ') || line.starts_with('\t') {
+                    line
+                } else {
+                    format!("{}{}", self.pad(), line)
+                };
+                out.push_str(&padded);
+                if !padded.trim_end().ends_with(';') && !padded.trim_end().ends_with('}') {
                     out.push(';');
                 }
                 out.push('\n');
@@ -120,8 +128,8 @@ impl Emitter {
         // Map CODIE source paths to Rust call patterns
         let (module, method) = split_source(source);
         match key {
-            Some(k) => format!("{}{}::{}({}).await?", self.pad(), module, method, self.emit(k)),
-            None    => format!("{}{}::{}().await?", self.pad(), module, method),
+            Some(k) => format!("{}::{}({}).await?", module, method, self.emit(k)),
+            None    => format!("{}::{}().await?", module, method),
         }
     }
 
@@ -235,11 +243,10 @@ fn infer_return(body: &[Node]) -> String {
 fn value_type(node: &Node) -> String {
     match node {
         Node::Atom { value } => {
-            // Capitalised = type name, lowercase = infer
             if value.chars().next().map(|c| c.is_uppercase()).unwrap_or(false) {
                 value.clone()
             } else {
-                format!("/* {} */", value)
+                "_".to_string()  // let rustc infer it
             }
         }
         Node::Fetch { source, .. } => {
@@ -247,7 +254,7 @@ fn value_type(node: &Node) -> String {
             let base = method.split("::").last().unwrap_or("Value");
             pascal_case(base)
         }
-        _ => "()".into(),
+        _ => "_".into(),
     }
 }
 
