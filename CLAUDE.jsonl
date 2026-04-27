@@ -1,0 +1,25 @@
+{"type":"identity","name":"Claudius-GREG","handle":"Greg","project":"gently-cc","project_path":"/home/tom/Projects/gently-cc","created_at":1745798400000,"grim_hash":"sha256:{grim:identity}"}
+{"type":"stack","layers":["codie","barf","codec"],"pipeline":"UserPromptSubmit → cold-check → codie → barf → codec → barf-feedback","compression":"27-94.7%","network":false,"ml":false}
+{"type":"binary","name":"codie","crate":"codie","build":"cargo build --release -p codie","path":"target/release/codie","role":"44-keyword glyph + CCP operators + vowel squeeze","layer":1}
+{"type":"binary","name":"barf","crate":"bs-artisan","build":"cargo build --release -p bs-artisan","path":"target/release/barf","role":"XOR-distance foam retrieval, 4 wires active","layer":2}
+{"type":"binary","name":"codec","crate":"gently-codec","build":"cargo build --release -p gently-codec","path":"target/release/codec","role":"hierarchical pin grid GLOBAL→PROJECT→USER→CHAT","layer":3}
+{"type":"hook","event":"UserPromptSubmit","command":"hooks/codie-compress.js","timeout":5000,"orc":"codie","order":1}
+{"type":"hook","event":"SessionStart","command":"hooks/session-start.js","timeout":5000,"orc":"lurk","order":1}
+{"type":"hook","event":"Stop","command":"hooks/response-extract.js","timeout":3000,"orc":"forge","order":1}
+{"type":"hook","event":"Stop","command":"hooks/stop.js","timeout":5000,"orc":"forge","order":2}
+{"type":"skill","name":"codie","path":"skills/codie/SKILL.md","orc":"codie","grim_hash":"sha256:{grim:codie}"}
+{"type":"skill","name":"ralph","path":"skills/ralph/SKILL.md","orc":"forge","grim_hash":"sha256:{grim:ralph}"}
+{"type":"skill","name":"team","path":"skills/team/SKILL.md","orc":"worg","grim_hash":"sha256:{grim:team}"}
+{"type":"skill","name":"autopilot","path":"skills/autopilot/SKILL.md","orc":"lurk","grim_hash":"sha256:{grim:autopilot}"}
+{"type":"skill","name":"gently","path":"skills/gently/SKILL.md","orc":"lurk","grim_hash":"sha256:{grim:gently}"}
+{"type":"skill","name":"crystal","path":"skills/crystal/SKILL.md","orc":"forge","grim_hash":"sha256:{grim:crystal}"}
+{"type":"skill","name":"grind","path":"skills/grind/SKILL.md","orc":"grim","grim_hash":"sha256:{grim:grind}"}
+{"type":"skill","name":"scope","path":"skills/scope/SKILL.md","orc":"chain","grim_hash":"sha256:{grim:scope}"}
+{"type":"skill","name":"social","path":"skills/social/SKILL.md","orc":"worg","grim_hash":"sha256:{grim:social}"}
+{"type":"skill","name":"codec","path":"skills/codec/SKILL.md","orc":"codie","grim_hash":"sha256:{grim:codec}"}
+{"type":"skill","name":"identity","path":"skills/identity/SKILL.md","orc":"lurk","grim_hash":"sha256:{grim:identity}"}
+{"type":"scope","project_id":"a3f91bc2e47d58f0","foam_path":"~/.gently/foam.json","pins_path":"~/.gently/projects/a3f91bc2e47d58f0/pins.json","crystals_path":"~/.gently/crystals/","identity_path":"~/.gently/agent-identity.json"}
+{"type":"mcp","server":"src/mcp-server.js","transport":"stdio","tools":["codec_pin_list","codec_pin_define","codec_pin_conflicts","barf_query"]}
+{"type":"invariant","rule":"never_permitted","locked":true,"values":["dilute_below_floor","erase_contributor_log","revoke_joined_at_hash","zero_comp_for_logged_time","fork_without_attribution","investor_exits_on_performance","retroactive_referral_modification","skip_dispute_triad","secret_investor_terms"]}
+{"type":"recovery","sequence":["build_binaries","write_identity","install_hooks","seed_foam_from_pins","verify_grim","emit_banner"],"bootstrap_cmd":"node src/recover.js","description":"Reads this file top-to-bottom and reconstitutes the full stack from scratch"}
+{"type":"grim","file":"CLAUDE.jsonl","hash":"sha256:{grim:claude-jsonl}","sealed":false}

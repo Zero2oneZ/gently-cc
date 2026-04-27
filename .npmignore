@@ -1,0 +1,15 @@
+# Build artifacts — pre-built binaries downloaded at postinstall from GitHub releases
+target/
+
+# Dev / CI
+.github/
+.gitignore
+*.log
+npm-debug.log*
+
+# Demo artifacts
+demo/*.json
+demo/*.jsonl
+
+# Gently session state
+.gently/

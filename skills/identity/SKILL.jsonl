@@ -1,0 +1,10 @@
+{"type":"meta","name":"identity","handle":"Greg","version":"1.0.0","orc":"lurk","binary":null,"crate":null}
+{"type":"command","name":"identity","description":"Show current agent name, project, scope, session hash","args":[],"example":"/identity"}
+{"type":"command","name":"identity who","description":"One-liner: name + project + scope","args":[],"example":"/identity who"}
+{"type":"command","name":"identity route","description":"Classify a prompt: in-scope, foreign, or ambiguous","args":["text"],"example":"/identity route 'check the trollz api'"}
+{"type":"command","name":"identity rename","description":"Rename this project's agent — updates CLAUDE.md + CLAUDE.jsonl + identity file","args":["handle"],"example":"/identity rename NOVA"}
+{"type":"cold_process","labels":["🟢●","🟡◉-D","🟡◉-C","🔴◉-S","⚪●"],"axes":["scope","duplicate","stitched","baseline"],"default_on_silence":"keep_here","timeout_seconds":10}
+{"type":"routing","options":["a:route_to_other","b:keep_here","c:both","d:drop"],"hard_anomaly":"prepend_to_prompt","soft_anomaly":"stderr_only"}
+{"type":"identity_file","path":"~/.gently/agent-identity.json","fields":["name","handle","project","project_id","project_path","created_at"],"mutable":false,"rename_via":"/identity rename"}
+{"type":"handle_lock","path":".agent-handle","purpose":"prevents reinstall from re-deriving handle","overrides":"auto-slug from directory name"}
+{"type":"grim","hash":"sha256:{grim:identity}","source":"skills/identity/SKILL.md"}

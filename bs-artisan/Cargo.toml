@@ -1,0 +1,15 @@
+[package]
+name = "bs-artisan"
+version = "1.0.0"
+edition = "2021"
+
+[[bin]]
+name = "barf"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+blake3 = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dirs = "5"

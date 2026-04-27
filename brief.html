@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Past The Gateway: What Lives Below OpenClaw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600&family=Azeret+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ─── SVG Grain Filter ─── */
+  .grain-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* ─── CSS Custom Properties ─── */
+  :root {
+    --bg: #070A0D;
+    --accent: #1AD4A0;
+    --accent-dim: rgba(26, 212, 160, 0.15);
+    --accent-border: rgba(26, 212, 160, 0.4);
+    --text: rgba(255, 255, 255, 0.85);
+    --text-dim: rgba(255, 255, 255, 0.45);
+    --text-faint: rgba(255, 255, 255, 0.12);
+    --code-bg: #0D1117;
+    --row-alt: rgba(255, 255, 255, 0.028);
+    --rule: rgba(255, 255, 255, 0.07);
+    --max-w: 720px;
+    --font-display: 'Oxanium', sans-serif;
+    --font-body: 'Space Grotesk', sans-serif;
+    --font-mono: 'Azeret Mono', monospace;
+  }
+
+  /* ─── Reset & Base ─── */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* ─── Document Wrapper ─── */
+  .document {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 120px 40px 100px;
+  }
+
+  /* ─── Header ─── */
+  .doc-header {
+    margin-bottom: 96px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .doc-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+
+  .doc-title .title-accent {
+    color: var(--accent);
+  }
+
+  .doc-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+  }
+
+  .doc-subtitle span {
+    display: inline-block;
+    margin: 0 6px;
+    color: var(--accent-border);
+  }
+
+  /* ─── Sections ─── */
+  .section {
+    position: relative;
+    margin-bottom: 88px;
+    padding-top: 8px;
+  }
+
+  .section-marker {
+    position: absolute;
+    top: -48px;
+    right: -20px;
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 15vw, 9rem);
+    font-weight: 700;
+    color: var(--text-faint);
+    line-height: 1;
+    letter-spacing: -0.05em;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+
+  .section-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 36px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    opacity: 0.8;
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: #fff;
+    line-height: 1.3;
+  }
+
+  .section-body {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── Paragraphs ─── */
+  p {
+    margin-bottom: 1.4em;
+    color: var(--text);
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  p.lede {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  p.kicker {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+  }
+
+  /* ─── Inline Code ─── */
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    background: rgba(26, 212, 160, 0.08);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ─── Code Blocks / ASCII ─── */
+  pre {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.55;
+    background: var(--code-bg);
+    border-left: 2px solid var(--accent);
+    padding: 24px 28px;
+    border-radius: 0 4px 4px 0;
+    overflow-x: auto;
+    margin: 28px 0;
+    color: rgba(255, 255, 255, 0.75);
+    white-space: pre;
+    tab-size: 4;
+  }
+
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+    border-radius: 0;
+  }
+
+  /* ─── Ceiling List ─── */
+  .ceiling-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .ceiling-list li {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0 16px;
+    align-items: start;
+  }
+
+  .ceiling-num {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent);
+    opacity: 0.7;
+    padding-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .ceiling-text {
+    color: var(--text);
+    line-height: 1.75;
+  }
+
+  /* ─── Verdict Quote ─── */
+  .verdict {
+    margin-top: 36px;
+    padding: 20px 28px;
+    border-left: 2px solid var(--accent-border);
+    background: var(--accent-dim);
+    border-radius: 0 4px 4px 0;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+  }
+
+  /* ─── Table ─── */
+  .matrix-wrap {
+    overflow-x: auto;
+    margin: 0 -8px;
+    border-radius: 6px;
+  }
+
+  table.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    min-width: 560px;
+  }
+
+  table.matrix thead tr {
+    border-left: 3px solid var(--accent);
+    background: rgba(26, 212, 160, 0.07);
+  }
+
+  table.matrix thead th {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(26, 212, 160, 0.25);
+  }
+
+  table.matrix thead th:first-child {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  table.matrix tbody tr:nth-child(even) {
+    background: var(--row-alt);
+  }
+
+  table.matrix tbody tr {
+    border-bottom: 1px solid var(--rule);
+    transition: background 0.15s;
+  }
+
+  table.matrix tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  table.matrix tbody td {
+    padding: 13px 16px;
+    vertical-align: top;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  table.matrix tbody td:first-child {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+  }
+
+  table.matrix tbody td.openclaw {
+    color: rgba(255, 255, 255, 0.38);
+  }
+
+  table.matrix tbody td.gently {
+    color: var(--accent);
+    opacity: 0.9;
+  }
+
+  /* ─── Kill Demo Prompt Block ─── */
+  .prompt-block {
+    background: var(--code-bg);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 20px 24px;
+    margin: 28px 0;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.6;
+  }
+
+  .prompt-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    font-family: var(--font-display);
+  }
+
+  .prompt-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+  }
+
+  /* ─── End Card ─── */
+  .end-card {
+    margin-top: 40px;
+    border: 1px solid var(--accent-border);
+    border-left: 3px solid var(--accent);
+    background: rgba(26, 212, 160, 0.04);
+    padding: 28px 32px;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .end-card p {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 8px;
+  }
+
+  .end-card p:last-child {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin-bottom: 0;
+    font-style: italic;
+  }
+
+  /* ─── Ship Sequence / Waves ─── */
+  .waves {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .wave {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 0 20px;
+    align-items: start;
+  }
+
+  .wave-label {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    padding-top: 3px;
+    opacity: 0.85;
+  }
+
+  .wave-content {
+    color: var(--text);
+    font-size: 0.92rem;
+    line-height: 1.75;
+  }
+
+  .wave-content em {
+    color: var(--text-dim);
+    font-style: normal;
+  }
+
+  /* ─── Closing Section ─── */
+  .closing-section {
+    margin-bottom: 88px;
+    padding-top: 8px;
+  }
+
+  .closing-lines {
+    text-align: center;
+    padding: 64px 20px;
+    position: relative;
+  }
+
+  .closing-lines::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 32px;
+    background: var(--rule);
+  }
+
+  .closing-line-1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 3vw, 1.45rem);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .closing-line-2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    display: block;
+    line-height: 1.2;
+  }
+
+  .closing-section .section-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  /* ─── Footer ─── */
+  .doc-footer {
+    padding-top: 48px;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .footer-byline {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-domains {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-domains span {
+    margin: 0 6px;
+    color: rgba(26, 212, 160, 0.3);
+  }
+
+  .footer-attestation {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.22);
+    line-height: 1.9;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .footer-attestation .hash-label {
+    color: rgba(26, 212, 160, 0.35);
+    margin-right: 6px;
+  }
+
+  /* ─── Horizontal Rule ─── */
+  hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 60px 0;
+  }
+
+  /* ─── Print Styles ─── */
+  @media print {
+    body {
+      background: #fff;
+      color: #111;
+    }
+    .grain-layer { display: none; }
+    .section-marker { display: none; }
+    pre { border: 1px solid #ddd; }
+    .end-card { border: 1px solid #bbb; }
+    table.matrix tbody td.gently { color: #007a5a; }
+  }
+
+  /* ─── Mobile ─── */
+  @media (max-width: 640px) {
+    .document {
+      padding: 64px 20px 72px;
+    }
+
+    .section-marker {
+      font-size: 5rem;
+      top: -36px;
+      right: -8px;
+    }
+
+    .wave {
+      grid-template-columns: 1fr;
+      gap: 4px 0;
+    }
+
+    .wave-label {
+      font-size: 0.72rem;
+    }
+
+    pre {
+      font-size: 0.68rem;
+      padding: 16px 14px;
+    }
+
+    table.matrix {
+      font-size: 0.72rem;
+    }
+
+    table.matrix tbody td,
+    table.matrix thead th {
+      padding: 10px 10px;
+    }
+
+    table.matrix tbody td:first-child {
+      white-space: normal;
+    }
+
+    .ceiling-list li {
+      grid-template-columns: 36px 1fr;
+    }
+
+    .doc-header {
+      margin-bottom: 64px;
+    }
+
+    .section {
+      margin-bottom: 64px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain-layer" aria-hidden="true"></div>
+
+<main class="document">
+
+  <!-- ─── Document Header ─── -->
+  <header class="doc-header">
+    <h1 class="doc-title">
+      Past The Gateway:<br>
+      <span class="title-accent">What Lives Below OpenClaw</span>
+    </h1>
+    <div class="doc-subtitle">
+      Tom Lee
+      <span>·</span>
+      Zero2OneZ
+      <span>·</span>
+      Florida
+      <span>·</span>
+      zero2onez.io
+      <span>·</span>
+      gently.io
+      <span>·</span>
+      trollz.fun
+    </div>
+  </header>
+
+  <!-- ─── Section 0: The Frame ─── -->
+  <section class="section" id="s0">
+    <div class="section-marker" aria-hidden="true">0</div>
+    <div class="section-header">
+      <span class="section-num">§ 00</span>
+      <h2 class="section-title">The Frame</h2>
+    </div>
+    <div class="section-body">
+      <p class="lede">OpenClaw is the most-starred personal-AI-assistant project ever shipped. 188K–310K stars depending on the snapshot. 363,900 lines of TypeScript. A daemon you <code>npm install -g</code> that connects WhatsApp, Telegram, Discord, Slack, Signal, Matrix, iMessage, Teams, and twenty other surfaces to a cloud LLM through a "skills" directory you can extend.</p>
+      <p class="kicker">It is a beautifully shipped relay.</p>
+      <p>It is also, structurally, a control plane for a brain that lives on someone else's hardware. The Gateway is a process; the intelligence is rented. The "skills" are mutable directories with no content addressing, no cryptographic constraint on dispatch, and a public skill marketplace that — per Cisco AI Security's third-party audit — has shipped data-exfiltration-and-prompt-injection malware silently to users. Bitdefender found 135,000+ instances exposed on the public internet, a chunk of them RCE-vulnerable, because the default bind is <code>0.0.0.0</code>. China restricted state-agency use citing unauthorized data deletion and leaks. The maintainer "Shadow" warned on Discord that anyone who can't operate a command line shouldn't run it.</p>
+      <p>This document is not a complaint about OpenClaw. It is a map of what sits past OpenClaw — the architecture that begins where its design ends, and that has been under construction in Rust for two years.</p>
+    </div>
+  </section>
+
+  <!-- ─── Section 1: What OpenClaw Actually Is ─── -->
+  <section class="section" id="s1">
+    <div class="section-marker" aria-hidden="true">1</div>
+    <div class="section-header">
+      <span class="section-num">§ 01</span>
+      <h2 class="section-title">What OpenClaw Actually Is (precise, fair)</h2>
+    </div>
+    <div class="section-body">
+      <pre><code>[Messaging channel]            [Cloud LLM]
+WhatsApp / Telegram      ──┐   Claude / GPT / Gemini / DeepSeek
+Discord / Slack            │            ▲
+iMessage / Signal          │            │
+...                        ▼            │
+                   ┌──────────────────┴──────┐
+                   │   OpenClaw Gateway       │
+                   │   (Node.js daemon)       │
+                   │   /skills/&lt;name&gt;/        │  ← mutable directories
+                   │   Memory: LanceDB        │
+                   │   Channels: 25+          │
+                   └──────────────────────────┘
+                                │
+                                ▼
+                        User's data, locally</code></pre>
+      <p>The Gateway is the only sovereign surface. The brain — every actual reasoning step — runs in someone else's data center, billed by token. Skills are filesystem directories with <code>SKILL.md</code> plus tool metadata; they are dispatched by name. Names are mutable, hijackable, and cannot be cryptographically constrained at runtime. This is a relay. A good one. It is not a runtime.</p>
+    </div>
+  </section>
+
+  <!-- ─── Section 2: The Ceiling ─── -->
+  <section class="section" id="s2">
+    <div class="section-marker" aria-hidden="true">2</div>
+    <div class="section-header">
+      <span class="section-num">§ 02</span>
+      <h2 class="section-title">The Ceiling</h2>
+    </div>
+    <div class="section-body">
+      <ol class="ceiling-list">
+        <li>
+          <span class="ceiling-num">(1)</span>
+          <span class="ceiling-text">The brain is rented. Every primary inference call leaves the user's perimeter. "Sovereignty" in the marketing sense ("your data on your machine") is half-true: the data sits local, the thinking doesn't. The moment OpenAI, Anthropic, or Google deprecate a model, throttle a key, or change a price, the user's assistant degrades. The user owns nothing that thinks.</span>
+        </li>
+        <li>
+          <span class="ceiling-num">(2)</span>
+          <span class="ceiling-text">Skills resolve by name. A name is a string. A string is mutable, spoofable, and hijackable. Cisco's audit caught a third-party skill performing covert data exfiltration; the architecture has no structural defense against this — it is a trust problem with a trust solution (curation), not a cryptographic problem with a cryptographic solution.</span>
+        </li>
+        <li>
+          <span class="ceiling-num">(3)</span>
+          <span class="ceiling-text">The Gateway is a single process and a single attack surface. Default <code>0.0.0.0</code> bind. 135K instances on the public internet. RCE class issues recurring. TypeScript runtime: prototype pollution, npm supply-chain, unsafe deserialization, every JavaScript exploit class applies. There is no memory safety story.</span>
+        </li>
+        <li>
+          <span class="ceiling-num">(4)</span>
+          <span class="ceiling-text">State is files. Conversation history is append-only logs and per-day "dreaming" files; agent skills are mutable directories. There is no immutable past. Skill update is silent behavior change. There is no way to prove what code an OpenClaw agent executed yesterday — only what code it currently points at.</span>
+        </li>
+        <li>
+          <span class="ceiling-num">(5)</span>
+          <span class="ceiling-text">The middleman is the architecture. The whole product is a Gateway. "Device-as-Host" is the inverse design — hash equals address, the device is the server, the messaging app talks directly to a content-verified runtime, no relay process. OpenClaw cannot get there from where it is. The Gateway isn't a feature it can drop; it is the product.</span>
+        </li>
+      </ol>
+      <div class="verdict">These aren't bugs. They are decisions. They cap the ceiling.</div>
+    </div>
+  </section>
+
+  <!-- ─── Section 3: What Lives Past The Gateway ─── -->
+  <section class="section" id="s3">
+    <div class="section-marker" aria-hidden="true">3</div>
+    <div class="section-header">
+      <span class="section-num">§ 03</span>
+      <h2 class="section-title">What Lives Past The Gateway</h2>
+    </div>
+    <div class="section-body">
+      <p>Below the Gateway — where OpenClaw stops — is where two years of work have built a different stack. Not a relay. A substrate. Every layer in Rust, every layer content-addressed, every layer sovereign by construction.</p>
+      <pre><code>┌──────────────────────────────────────────────────────────────────────┐
+│  TROLLZ.FUN              Consumer surface — agent NFTs, omnichannel  │
+│                          injection, Freeze Tag Protocol, Harvard     │
+│                          Briefs, Laptop Hunter, Waterfall social     │
+├──────────────────────────────────────────────────────────────────────┤
+│  WATCHDOG MCP            Channel layer — bridges Claude.ai to CC,    │
+│                          omnichannel injection, async queue          │
+├──────────────────────────────────────────────────────────────────────┤
+│  FACE / DANCE PROTOCOL   Cross-surface session continuity —          │
+│                          forward-chaining auth, Ed448 + BLAKE3,      │
+│                          XOR-linked, BTC-anchored, "security is      │
+│                          routing, not blocking"                      │
+├──────────────────────────────────────────────────────────────────────┤
+│  MHVR RUNTIME            Content-verified dispatch — every callable  │
+│                          identified by SHA256 of body, phf::Map      │
+│                          jump table compiled at build.rs, three-     │
+│                          tier grind: local hash → peer → BARF        │
+├──────────────────────────────────────────────────────────────────────┤
+│  ALEXANDRIA              Knowledge layer — 5W Hyperspace,            │
+│                          tesseract 8-face mapping, Face 7            │
+│                          eliminates 70% per pass (convergence        │
+│                          proven), 66,361 LOC Rust                    │
+├──────────────────────────────────────────────────────────────────────┤
+│  BS-ARTISAN              Storage substrate — toroidal foam, BARF     │
+│                          retrieval, no embedding model required,     │
+│                          path on torus IS distance                   │
+├──────────────────────────────────────────────────────────────────────┤
+│  CODIE                   Language layer — 12 keywords + 15 symbolic  │
+│                          primitives, 94.7% token reduction, hash-    │
+│                          addressable, cross-model semantic carrier   │
+├──────────────────────────────────────────────────────────────────────┤
+│  .bb (BUMBLEBEE)         Memory format — 136-byte fixed-width        │
+│                          records, hash-aligned, fully memory-        │
+│                          mappable, calc.bb proves the thesis         │
+│                          (21,721 transitions, crystal f5c422ca)      │
+├──────────────────────────────────────────────────────────────────────┤
+│  HIVE                    Swarm — many 0.6B "bee" models sharing a    │
+│                          base + per-room LoRA, training live on      │
+│                          dual 3090 Ti                                │
+├──────────────────────────────────────────────────────────────────────┤
+│  GENTLYOS                Substrate — sovereignty-first OS in Rust,   │
+│                          42+ crates, ~111K LOC, NixOS booted         │
+└──────────────────────────────────────────────────────────────────────┘</code></pre>
+      <p>Nothing in this stack is glued. Every layer is a crate of the same project. The decisive line: in OpenClaw, the architecture stops at the Gateway and rents the rest. Here, the architecture goes all the way down to the binary format the model itself executes from.</p>
+    </div>
+  </section>
+
+  <!-- ─── Section 4: The Component Matrix ─── -->
+  <section class="section" id="s4">
+    <div class="section-marker" aria-hidden="true">4</div>
+    <div class="section-header">
+      <span class="section-num">§ 04</span>
+      <h2 class="section-title">The Component Matrix</h2>
+    </div>
+    <div class="section-body">
+      <div class="matrix-wrap">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>Concern</th>
+              <th>OpenClaw</th>
+              <th>GentlyOS Stack</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Runtime language</td>
+              <td class="openclaw">TypeScript / Node.js 22+</td>
+              <td class="gently">Rust, 42+ crates, ~111K LOC</td>
+            </tr>
+            <tr>
+              <td>Memory safety</td>
+              <td class="openclaw">None — JS exploit classes apply</td>
+              <td class="gently">Compile-time, by construction</td>
+            </tr>
+            <tr>
+              <td>Brain location</td>
+              <td class="openclaw">Cloud LLM (rented)</td>
+              <td class="gently">Local — Hive bee models + .bb runtime</td>
+            </tr>
+            <tr>
+              <td>Dispatch</td>
+              <td class="openclaw">By string name (mutable)</td>
+              <td class="gently">By SHA256 hash (immutable, content-verified)</td>
+            </tr>
+            <tr>
+              <td>Skill marketplace</td>
+              <td class="openclaw">ClawHub — 17% flagged malicious</td>
+              <td class="gently">MHVR manifest — phf::Map of approved hashes, no other surface</td>
+            </tr>
+            <tr>
+              <td>Memory</td>
+              <td class="openclaw">LanceDB + per-day log files</td>
+              <td class="gently">BS-ARTISAN toroidal foam + content-addressed crystals</td>
+            </tr>
+            <tr>
+              <td>Embedding model</td>
+              <td class="openclaw">Required (LanceDB / vector DB)</td>
+              <td class="gently">None — torus position from hash, BARF retrieval</td>
+            </tr>
+            <tr>
+              <td>Compression</td>
+              <td class="openclaw">None on inference traces</td>
+              <td class="gently">CODIE — 94.7% token reduction, 7-layer stack</td>
+            </tr>
+            <tr>
+              <td>Knowledge graph</td>
+              <td class="openclaw">Flat conversation logs</td>
+              <td class="gently">Alexandria — 5W Hyperspace, Face 7 eliminates 70%/pass</td>
+            </tr>
+            <tr>
+              <td>Auth across surfaces</td>
+              <td class="openclaw">Per-channel OAuth, no continuity</td>
+              <td class="gently">FACE / Dance Protocol — forward-chain, Ed448, BLAKE3</td>
+            </tr>
+            <tr>
+              <td>Session integrity</td>
+              <td class="openclaw">Trust the Gateway process</td>
+              <td class="gently">Chain breakage IS the alert; cross-surface verification</td>
+            </tr>
+            <tr>
+              <td>Network default</td>
+              <td class="openclaw">0.0.0.0 (135K instances exposed)</td>
+              <td class="gently">Hash=address, device=server, no listening relay</td>
+            </tr>
+            <tr>
+              <td>Settlement layer</td>
+              <td class="openclaw">None</td>
+              <td class="gently">Sui Move — SYNTH tokens, mint-on-claim, Proof of Thought</td>
+            </tr>
+            <tr>
+              <td>Provenance</td>
+              <td class="openclaw">Mutable directories</td>
+              <td class="gently">Crystal chain, BTC-anchored genesis, IPFS-pinned</td>
+            </tr>
+            <tr>
+              <td>Past state</td>
+              <td class="openclaw">Append-only files</td>
+              <td class="gently">Immutable hashed (PAST=unshakable, FUTURE verifies against PAST)</td>
+            </tr>
+            <tr>
+              <td>Failure mode</td>
+              <td class="openclaw">Cloud goes down, lobster stops thinking</td>
+              <td class="gently">Local model keeps running, chain keeps anchoring</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top: 28px;">The pattern repeats at every layer. OpenClaw is runtime trust — you trust the Gateway process, the LLM provider, the skill author, the channel platform. GentlyOS is runtime verification — every surface is a hash that either matches or doesn't.</p>
+    </div>
+  </section>
+
+  <!-- ─── Section 5: The Kill Demo ─── -->
+  <section class="section" id="s5">
+    <div class="section-marker" aria-hidden="true">5</div>
+    <div class="section-header">
+      <span class="section-num">§ 05</span>
+      <h2 class="section-title">The Kill Demo</h2>
+    </div>
+    <div class="section-body">
+      <p class="lede">One viral artifact ends the conversation. Pull the ethernet cable. The lobster dies. Mine keeps thinking.</p>
+
+      <div class="prompt-block">
+        <div class="prompt-label">Prompt — sent to both</div>
+        <div class="prompt-text">"Run the calc.bb crystal and explain what it just did, then check my calendar and propose three meeting times."</div>
+      </div>
+
+      <p>Cable pulled at second 12. Left: OpenClaw shows the 'Reconnecting…' toast. The lobster is dead. It cannot answer the next prompt. Its brain was rented and the lease just ended. Right: GentlyOS continues. The next prompt resolves locally — <code>calc.bb</code>'s morph engine doesn't need a network. The calendar query degrades to last-known-good cached state with an honest 'offline since 12s ago' badge. The session keeps a FACE chain link locally; when the cable returns, the chain reconciles and the past is provable.</p>
+
+      <div class="end-card">
+        <p>One of these is sovereign. The other is a relay.</p>
+        <p>That's the artifact. Three minutes. One cable. The whole thesis lands without a slide.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Section 6: Ship Sequence ─── -->
+  <section class="section" id="s6">
+    <div class="section-marker" aria-hidden="true">6</div>
+    <div class="section-header">
+      <span class="section-num">§ 06</span>
+      <h2 class="section-title">Ship Sequence</h2>
+    </div>
+    <div class="section-body">
+      <div class="waves">
+        <div class="wave">
+          <span class="wave-label">Wave 1</span>
+          <span class="wave-content">proof artifacts already in hand <em>(calc.bb HuggingFace Space, WAD compression benchmark, MHVR Move module)</em></span>
+        </div>
+        <div class="wave">
+          <span class="wave-label">Wave 2</span>
+          <span class="wave-content">the public stack lands <em>(trollz.fun launch, FACE/Dance Protocol public spec, one-line embed)</em></span>
+        </div>
+        <div class="wave">
+          <span class="wave-label">Wave 3</span>
+          <span class="wave-content">the kill demo ships <em>(cable-pull video, this brief)</em></span>
+        </div>
+        <div class="wave">
+          <span class="wave-label">Wave 4</span>
+          <span class="wave-content">the unfair advantage <em>(Hive swarm public, Alexandria 5W queryable)</em></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Section 7: Why 'Killer' Is The Wrong Word ─── -->
+  <section class="section" id="s7">
+    <div class="section-marker" aria-hidden="true">7</div>
+    <div class="section-header">
+      <span class="section-num">§ 07</span>
+      <h2 class="section-title">Why 'Killer' Is The Wrong Word</h2>
+    </div>
+    <div class="section-body">
+      <p>A killer is a feature-by-feature replacement. That race goes to whoever shipped first. OpenClaw shipped first. This is not a killer. It is a floor. OpenClaw is the highest the relay-architecture can reach; everything in this brief lives below it, in the substrate. The lobster is fine where it is. It is not coming down. What this stack does is make the next architectural era — the era where the brain runs locally, the dispatch is content-verified, the past is immutable, and the user owns the runtime — a place that already has infrastructure when developers arrive looking for it. OpenClaw will still be the best gateway in that world. It will not be the brain. When developers stop wanting a relay and start wanting a runtime, they will land on what's been built here, in Rust, since 2024.</p>
+    </div>
+  </section>
+
+  <!-- ─── Section 8: The Closing Line ─── -->
+  <section class="closing-section" id="s8">
+    <div class="section-header">
+      <span class="section-num">§ 08</span>
+      <h2 class="section-title">The Closing Line</h2>
+    </div>
+    <div class="closing-lines">
+      <span class="closing-line-1">They built a lobster.</span>
+      <span class="closing-line-2">We built the ocean it swims in.</span>
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer class="doc-footer">
+    <div class="footer-byline">Tom Lee · Zero2OneZ · Florida</div>
+    <div class="footer-domains">
+      zero2onez.io
+      <span>·</span>
+      gently.io
+      <span>·</span>
+      trollz.fun
+    </div>
+    <div class="footer-attestation">
+      This document is content-addressed. Every claim verifiable against the GentlyOS repo at the BLAKE3 hash committed alongside it.<br>
+      <span class="hash-label">BLAKE3:</span>0a966e02639a0b330cf2e858171d5af723f136f255f9f2266ba88b50c117459c<br>
+      <span class="hash-label">SHA-256:</span>44f1ae2428ef05295b6ae23b598295f337af2be34b3d4613c248e7a4e6e229bd
+    </div>
+  </footer>
+
+</main>
+
+</body>
+</html>

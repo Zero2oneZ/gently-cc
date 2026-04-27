@@ -1,0 +1,15 @@
+{"type":"meta","name":"codec","handle":"Greg","version":"1.0.0","orc":"codie","binary":"codec","crate":"gently-codec"}
+{"type":"command","name":"ref","description":"Look up a pin and show its scope level","args":["name"],"example":"codec ref auth"}
+{"type":"command","name":"list","description":"Show all active pins for current project","args":[],"example":"codec list"}
+{"type":"command","name":"context","description":"Dump compact project pin table for model injection","args":[],"example":"codec context"}
+{"type":"command","name":"define","description":"Define a pin at the given scope level","args":["name","label"],"flags":["--scope project|user|chat"],"example":"codec --scope project define auth authentication and session management"}
+{"type":"command","name":"crystal","description":"Seal current chat scope as a BLAKE3-addressed Crystal checkpoint","args":[],"example":"codec crystal"}
+{"type":"command","name":"load","description":"Resume from Crystal checkpoint by hash prefix","args":["prefix"],"example":"codec load a3f2"}
+{"type":"command","name":"conflicts","description":"Show pins defined at multiple scope levels with different labels","args":[],"example":"codec conflicts"}
+{"type":"command","name":"suggest","description":"Show promotion candidates","args":[],"example":"codec suggest"}
+{"type":"command","name":"promote","description":"Promote a pin one scope level up","args":["name"],"flags":["--to global|project|user"],"example":"codec promote auth --to project"}
+{"type":"scope","hierarchy":["global","project","user","chat"],"resolution":"chat → user → project → global, first hit wins"}
+{"type":"storage","global":"~/.gently/global/pins.json","project":"~/.gently/projects/{project_id}/pins.json","user":"~/.gently/users/{user_id}/pins.json","chat":"~/.gently/sessions/{session_id}/pins.json"}
+{"type":"promotion","chat_to_user":"5+ refs in one chat","user_to_project":"3+ chats by same user","project_to_global":"2+ projects, human-gated"}
+{"type":"capability","required":null,"gate":null}
+{"type":"grim","hash":"sha256:{grim:codec}","source":"skills/codec/SKILL.md"}

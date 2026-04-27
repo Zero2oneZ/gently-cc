@@ -1,0 +1,100 @@
+{
+  "name": "gently-cc",
+  "version": "1.0.0",
+  "description": "GentlyOS Claude Code substrate. CODIE compression. GRIM hash dispatch. Alexandria + BS-Artisan memory. Sui-gated capabilities. 94.7% token reduction.",
+  "author": "Zero2OneZ <tomlee3ddesign@gmail.com>",
+  "license": "UNLICENSED",
+  "private": false,
+  "keywords": [
+    "claude-code", "claude", "ai", "agents", "codie", "gently", "grim",
+    "alexandria", "bs-artisan", "sui", "synth", "token-compression",
+    "multi-agent", "orchestration", "discord", "telegram", "tiktok"
+  ],
+  "homepage": "https://gentlyos.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zero2onez/gently-cc"
+  },
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "gently-cc": "src/cli.js"
+  },
+  "files": [
+    "CLAUDE.md",
+    "CLAUDE.jsonl",
+    "hooks/",
+    "skills/",
+    "agents/",
+    "src/",
+    "demo/",
+    "codie/",
+    "bs-artisan/",
+    "gently-codec/",
+    "Cargo.toml",
+    "Cargo.lock"
+  ],
+  "scripts": {
+    "postinstall": "node src/install.js",
+    "verify": "node src/verify.js",
+    "codie:build": "cargo build --release -p codie",
+    "codie:test": "cargo test -p codie",
+    "codie:bench": "cargo build --release -p codie && ./target/release/codie bench",
+    "barf:build": "cargo build --release -p bs-artisan",
+    "barf:query": "cargo build --release -p bs-artisan && ./target/release/barf query",
+    "barf:stats": "./target/release/barf stats",
+    "codec:build": "cargo build --release -p gently-codec",
+    "codec:table": "./target/release/codec table",
+    "codec:crystal": "./target/release/codec crystal",
+    "stack:build": "cargo build --release -p codie && cargo build --release -p bs-artisan && cargo build --release -p gently-codec",
+    "grim:scan": "grim-scanner scan . --out ./grim.json",
+    "grim:verify": "grim-scanner verify ./skills ./hooks",
+    "mcp": "node src/mcp-server.js",
+    "recover": "node src/recover.js",
+    "test": "node --test src/__tests__/"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  },
+  "claude": {
+    "type": "plugin",
+    "manifest_version": 1,
+    "skills": [
+      "skills/codie",
+      "skills/ralph",
+      "skills/team",
+      "skills/autopilot",
+      "skills/gently",
+      "skills/crystal",
+      "skills/grind",
+      "skills/scope",
+      "skills/social",
+      "skills/codec",
+      "skills/identity"
+    ],
+    "hooks": {
+      "UserPromptSubmit": [{"matcher": "", "hooks": [{"type": "command", "command": "hooks/codie-compress.js"}]}],
+      "SessionStart":     [{"matcher": "", "hooks": [{"type": "command", "command": "hooks/session-start.js"}]}],
+      "Stop":             [{"matcher": "", "hooks": [{"type": "command", "command": "hooks/response-extract.js"}, {"type": "command", "command": "hooks/stop.js"}]}]
+    },
+    "context_files": [
+      "CLAUDE.md"
+    ]
+  },
+  "gently": {
+    "stack": ["codie", "grim", "alexandria", "bs-artisan", "bb-runtime", "sui"],
+    "trollz_api": "https://trollz.fun",
+    "mcp_tools": 31,
+    "token_reduction": "33-45% natural language · 80%+ structured CODIE",
+    "codie_binary": "target/release/codie",
+    "codie_source": "codie/src/",
+    "manifest_root": "sha256:{computed by grim-scanner at install}"
+  }
+}

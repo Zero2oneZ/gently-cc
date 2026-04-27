@@ -1,0 +1,20 @@
+[package]
+name = "codie"
+version = "1.0.0"
+edition = "2021"
+description = "CODIE — 44-keyword prompt compression CLI. 94.7% token reduction. Zero network. Zero ML."
+authors = ["Zero2OneZ <tomlee3ddesign@gmail.com>"]
+license = "UNLICENSED"
+homepage = "https://gentlyos.io"
+repository = "https://github.com/zero2onez/gently-cc"
+
+[[bin]]
+name = "codie"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+blake3 = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dirs = "5"
