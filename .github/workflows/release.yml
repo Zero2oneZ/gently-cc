@@ -65,13 +65,28 @@ jobs:
             cargo build --release --target ${{ matrix.target }} -p gently-codec
           fi
 
-      - name: Stage release assets
+      - name: Install rsign
+        run: cargo install rsign2 --locked
+
+      - name: Stage and sign release assets
+        env:
+          MINISIGN_SECRET_KEY: ${{ secrets.MINISIGN_SECRET_KEY }}
         run: |
           mkdir -p dist
           cp target/${{ matrix.target }}/release/codie  dist/codie-${{ matrix.target }}
           cp target/${{ matrix.target }}/release/barf   dist/barf-${{ matrix.target }}
           cp target/${{ matrix.target }}/release/codec  dist/codec-${{ matrix.target }}
-          chmod +x dist/*
+          chmod +x dist/codie-${{ matrix.target }} dist/barf-${{ matrix.target }} dist/codec-${{ matrix.target }}
+
+          # Sign each binary — private key from secret, -W = no password prompt
+          echo "$MINISIGN_SECRET_KEY" > /tmp/minisign.key
+          for bin in dist/codie-${{ matrix.target }} dist/barf-${{ matrix.target }} dist/codec-${{ matrix.target }}; do
+            ~/.cargo/bin/rsign sign -s /tmp/minisign.key -m "$bin" -W
+          done
+          rm -f /tmp/minisign.key
+
+          # SHA-256 checksums
+          sha256sum dist/* > dist/checksums-${{ matrix.target }}.txt
 
       - name: Upload to release
         uses: softprops/action-gh-release@v2

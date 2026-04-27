@@ -121,32 +121,60 @@ function platformTarget() {
   return null;
 }
 
+function findRsign() {
+  const { spawnSync } = require('child_process');
+  for (const candidate of ['rsign', `${process.env.HOME}/.cargo/bin/rsign`]) {
+    if (spawnSync(candidate, ['--version'], { encoding: 'utf8' }).status === 0) return candidate;
+  }
+  return null;
+}
+
+async function verifyBinary(binaryPath, sigPath) {
+  const { spawnSync } = await import('child_process');
+  const pubkey = join(PKG_ROOT, 'src', 'minisign.pub');
+  if (!existsSync(pubkey)) { console.log('  · no public key — skipping signature verify'); return true; }
+  const rsign = findRsign();
+  if (!rsign) { console.log('  · rsign not found — skipping signature verify'); return true; }
+  const r = spawnSync(rsign, ['verify', '-p', pubkey, '-m', binaryPath, '-x', sigPath], { encoding: 'utf8' });
+  if (r.status !== 0) {
+    try { unlinkSync(binaryPath); } catch {}
+    try { unlinkSync(sigPath); } catch {}
+    return false;
+  }
+  return true;
+}
+
 async function downloadBinaries(version) {
   const target = platformTarget();
   if (!target) return false;
 
   const { execSync } = await import('child_process');
+  const { unlinkSync } = await import('fs');
   const outDir = join(PKG_ROOT, 'target', 'release');
   mkdirSync(outDir, { recursive: true });
 
-  const base = `https://github.com/zero2onez/gently-cc/releases/download/v${version}`;
+  const base = `https://github.com/Zero2oneZ/gently-cc/releases/download/v${version}`;
   const binaries = ['codie', 'barf', 'codec'];
 
   console.log(`  ⬇  Downloading pre-built binaries for ${target}...`);
-  let downloaded = 0;
+  let verified = 0;
   for (const name of binaries) {
-    const url = `${base}/${name}-${target}`;
-    const dest = join(outDir, name);
-    if (existsSync(dest)) { downloaded++; continue; }
+    const dest    = join(outDir, name);
+    const destSig = dest + '.minisig';
+    if (existsSync(dest) && existsSync(destSig)) { verified++; continue; }
     try {
-      execSync(`curl -fsSL "${url}" -o "${dest}" && chmod +x "${dest}"`, { stdio: 'pipe' });
-      console.log(`  ✓ ${name} downloaded`);
-      downloaded++;
+      execSync(`curl -fsSL "${base}/${name}-${target}" -o "${dest}"`,         { stdio: 'pipe' });
+      execSync(`curl -fsSL "${base}/${name}-${target}.minisig" -o "${destSig}"`, { stdio: 'pipe' });
+      const ok = await verifyBinary(dest, destSig);
+      if (!ok) { console.log(`  ✗ ${name} signature INVALID — binary removed`); continue; }
+      execSync(`chmod +x "${dest}"`);
+      console.log(`  ✓ ${name} downloaded and verified`);
+      verified++;
     } catch {
-      console.log(`  · ${name} not available at ${url}`);
+      console.log(`  · ${name} not available for ${target}`);
     }
   }
-  return downloaded === binaries.length;
+  return verified === binaries.length;
 }
 
 async function buildBinaries() {
