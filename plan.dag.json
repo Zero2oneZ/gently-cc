@@ -1,0 +1,866 @@
+{
+  "root_cid": "sha256:8b52754ca94f5a14b8ad381582e52f3e1b6831647e3a7a0370150b6a6f896b81",
+  "tasks": {
+    "A.1.1": {
+      "id": "A.1.1",
+      "title": "Generate minisign keypair and store public key in repo",
+      "phase": "A",
+      "requires": [],
+      "ref_by": [
+        "A.1.2",
+        "A.1.3",
+        "D.1.3"
+      ],
+      "files": [
+        ".github/workflows/release.yml",
+        "src/minisign.pub"
+      ],
+      "task_cid": "sha256:b7793e5e133ecf38b05942c6705edaca1a976eb1b7b52a569ffcffb18a4d1aee",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.1.2": {
+      "id": "A.1.2",
+      "title": "Sign binaries in release workflow",
+      "phase": "A",
+      "requires": [
+        "A.1.1"
+      ],
+      "ref_by": [
+        "A.1.3"
+      ],
+      "files": [
+        ".github/workflows/release.yml"
+      ],
+      "task_cid": "sha256:3bf4afc607e4ce5af251845bc08294f6abf0ad55a3204fd8444509a7a54690d1",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.1.3": {
+      "id": "A.1.3",
+      "title": "Verify signatures at install time",
+      "phase": "A",
+      "requires": [
+        "A.1.1",
+        "A.1.2"
+      ],
+      "ref_by": [
+        "A.1.4",
+        "B.3.4"
+      ],
+      "files": [
+        "src/install.js"
+      ],
+      "task_cid": "sha256:7089cb963506b04c506417d26d5cff616b86ed5542e3ab397add7bda610810de",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.1.4": {
+      "id": "A.1.4",
+      "title": "Add verification to recover.js",
+      "phase": "A",
+      "requires": [
+        "A.1.3"
+      ],
+      "ref_by": [
+        "D.1.4"
+      ],
+      "files": [
+        "src/recover.js"
+      ],
+      "task_cid": "sha256:077aa9c9b139d5b0a67e8f06c6ad0fb9ad156d7a5d6ff459abb55dc9caa4d8d3",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.2.1": {
+      "id": "A.2.1",
+      "title": "Generate Ed25519 keypair at install time",
+      "phase": "A",
+      "requires": [
+        "A.1.1"
+      ],
+      "ref_by": [
+        "A.2.2",
+        "A.2.3",
+        "A.2.4",
+        "C.1.3"
+      ],
+      "files": [
+        "src/install.js"
+      ],
+      "task_cid": "sha256:9c2bd524a552544f796ab69519e0a804bc97f6018fa972778fd08d732e1c0196",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.2.2": {
+      "id": "A.2.2",
+      "title": "Sign function — shared crypto module",
+      "phase": "A",
+      "requires": [
+        "A.2.1"
+      ],
+      "ref_by": [
+        "A.2.3",
+        "A.2.4",
+        "C.2.1"
+      ],
+      "files": [
+        "src/identity-crypto.js"
+      ],
+      "task_cid": "sha256:a26ef3146ead4950c7bb75f53367695cfc9210e634c00db37582ddba96011a87",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.2.3": {
+      "id": "A.2.3",
+      "title": "Sign anomaly bus entries",
+      "phase": "A",
+      "requires": [
+        "A.2.1",
+        "A.2.2"
+      ],
+      "ref_by": [
+        "C.2.1",
+        "C.2.4"
+      ],
+      "files": [
+        "hooks/codie-compress.js"
+      ],
+      "task_cid": "sha256:3e076e2f866ac2fae9bdbaa7d7f0f91f600907c4bcc101d2adf0b94e3f4c0ddf",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.2.4": {
+      "id": "A.2.4",
+      "title": "Verify identity on session start",
+      "phase": "A",
+      "requires": [
+        "A.2.1",
+        "A.2.2"
+      ],
+      "ref_by": [
+        "C.1.5"
+      ],
+      "files": [
+        "hooks/session-start.js"
+      ],
+      "task_cid": "sha256:b3204c1d1b6a16563f94d7722ca82f4863370937e1c4cadf2bce34c7bb61784d",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.3.1": {
+      "id": "A.3.1",
+      "title": "Write grim-scanner.js",
+      "phase": "A",
+      "requires": [],
+      "ref_by": [
+        "A.3.2",
+        "A.3.3",
+        "A.3.4"
+      ],
+      "files": [
+        "src/grim-scanner.js"
+      ],
+      "task_cid": "sha256:9e44ab220ac67bc4689c5589562a770019c45df49751bb0d979ce9525ee10f3a",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.3.2": {
+      "id": "A.3.2",
+      "title": "Run the scanner — replace all placeholders",
+      "phase": "A",
+      "requires": [
+        "A.3.1"
+      ],
+      "ref_by": [
+        "A.3.3",
+        "A.3.4"
+      ],
+      "files": [
+        "CLAUDE.md",
+        "skills/*/SKILL.jsonl",
+        "skills/*/SKILL.md"
+      ],
+      "task_cid": "sha256:d1db7d74318435ca1fdb9930da9bdcd5cb40addde6563f81d4bac39b310a3c2f",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.3.3": {
+      "id": "A.3.3",
+      "title": "Verify GRIM hashes on session start",
+      "phase": "A",
+      "requires": [
+        "A.3.1",
+        "A.3.2"
+      ],
+      "ref_by": [
+        "D.1.4"
+      ],
+      "files": [
+        "hooks/session-start.js"
+      ],
+      "task_cid": "sha256:e8b64e9c4e359ee3cf8b6da6b970dd3f3e21d521bb7feffc09bbc2e135881240",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.3.4": {
+      "id": "A.3.4",
+      "title": "Add GRIM verify to CI",
+      "phase": "A",
+      "requires": [
+        "A.3.1",
+        "A.3.2"
+      ],
+      "ref_by": [
+        "D.1.2"
+      ],
+      "files": [
+        ".github/workflows/ci.yml"
+      ],
+      "task_cid": "sha256:c3c2e71bb2e298e1642cceaceeee4f333b6cd14de616b006db7ee81ae394c42c",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "A.4.1": {
+      "id": "A.4.1",
+      "title": "Sanitize barf/codec arguments",
+      "phase": "A",
+      "requires": [],
+      "ref_by": [
+        "B.2.6"
+      ],
+      "files": [
+        "hooks/codie-compress.js",
+        "hooks/response-extract.js"
+      ],
+      "task_cid": "sha256:562809cb95d682760112e772a0fad4d487980a51ee12ce14a92838782a7b3ad3",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.1.1": {
+      "id": "B.1.1",
+      "title": "Create gently-tui Rust crate",
+      "phase": "B",
+      "requires": [
+        "A.1.3",
+        "A.3.2"
+      ],
+      "ref_by": [
+        "B.1.2",
+        "B.1.3",
+        "B.1.4",
+        "B.1.5",
+        "B.1.6"
+      ],
+      "files": [
+        "Cargo.toml",
+        "gently-tui/Cargo.toml",
+        "gently-tui/src/main.rs"
+      ],
+      "task_cid": "sha256:434239699122f665228125dd711df604b556e22b8873954a0c528c08ef49c019",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.1.2": {
+      "id": "B.1.2",
+      "title": "Sessions panel",
+      "phase": "B",
+      "requires": [
+        "B.1.1"
+      ],
+      "ref_by": [
+        "B.1.6",
+        "C.3.4"
+      ],
+      "files": [
+        "gently-tui/src/panels/sessions.rs"
+      ],
+      "task_cid": "sha256:ca995211e2acc41b4aea30815d592eb0a05c54224aa94857b46fc182f7ef3c7a",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.1.3": {
+      "id": "B.1.3",
+      "title": "Anomaly stream panel",
+      "phase": "B",
+      "requires": [
+        "A.2.3",
+        "B.1.1"
+      ],
+      "ref_by": [
+        "B.1.6",
+        "C.2.3"
+      ],
+      "files": [
+        "gently-tui/src/panels/anomalies.rs"
+      ],
+      "task_cid": "sha256:2fd4e95f5484cd433d804f9954b170ae6cb8279d0a16e95901221caea7d2d2a6",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.1.4": {
+      "id": "B.1.4",
+      "title": "CODIE stats panel",
+      "phase": "B",
+      "requires": [
+        "B.1.1"
+      ],
+      "ref_by": [
+        "B.1.6",
+        "C.3.1"
+      ],
+      "files": [
+        "gently-tui/src/panels/codie.rs"
+      ],
+      "task_cid": "sha256:c0d5b62d3192df0bd3e4c039ccb30f6f89592e6fd0369eb8d7b66d5c4fae2a71",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.1.5": {
+      "id": "B.1.5",
+      "title": "Foam stats panel",
+      "phase": "B",
+      "requires": [
+        "B.1.1"
+      ],
+      "ref_by": [
+        "B.1.6"
+      ],
+      "files": [
+        "gently-tui/src/panels/foam.rs"
+      ],
+      "task_cid": "sha256:ccdff9e0e490457544538e0834df9772e106f7dcebcc35ce1614d5dc0da34cfb",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.1.6": {
+      "id": "B.1.6",
+      "title": "Wire dashboard command to CLI",
+      "phase": "B",
+      "requires": [
+        "B.1.1",
+        "B.1.2",
+        "B.1.3",
+        "B.1.4",
+        "B.1.5"
+      ],
+      "ref_by": [
+        "C.3.4"
+      ],
+      "files": [
+        ".github/workflows/release.yml",
+        "src/cli.js"
+      ],
+      "task_cid": "sha256:d87a7e421464bfd4e352a85929c2c0fb00965bb3d47538583beba52eea675b6d",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.2.1": {
+      "id": "B.2.1",
+      "title": "Request queuing and connection lifecycle",
+      "phase": "B",
+      "requires": [
+        "A.4.1"
+      ],
+      "ref_by": [
+        "B.2.2",
+        "B.2.3",
+        "B.2.4",
+        "B.2.5"
+      ],
+      "files": [
+        "src/mcp-server.js"
+      ],
+      "task_cid": "sha256:d17883ee7df41f1e2c495ee54b7841bcafee63952c83c8ea14050b6a50f5f943",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.2.2": {
+      "id": "B.2.2",
+      "title": "Capability check middleware",
+      "phase": "B",
+      "requires": [
+        "A.2.1",
+        "B.2.1"
+      ],
+      "ref_by": [
+        "B.2.3",
+        "B.2.4",
+        "C.1.5"
+      ],
+      "files": [
+        "src/capabilities.js",
+        "src/mcp-server.js"
+      ],
+      "task_cid": "sha256:eaed179da80a071f54d241b9104cae82860dea8212c0d3ca932e22380265fce0",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.2.3": {
+      "id": "B.2.3",
+      "title": "Full codec tool surface",
+      "phase": "B",
+      "requires": [
+        "B.2.1",
+        "B.2.2"
+      ],
+      "ref_by": [
+        "C.1.4"
+      ],
+      "files": [
+        "src/mcp-server.js"
+      ],
+      "task_cid": "sha256:0124c4dde130b445092985f1cac5e1d9f4c9ebe3762e4c0e827fd8f7412de585",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.2.4": {
+      "id": "B.2.4",
+      "title": "Full barf tool surface",
+      "phase": "B",
+      "requires": [
+        "B.2.1",
+        "B.2.2"
+      ],
+      "ref_by": [
+        "C.2.5"
+      ],
+      "files": [
+        "src/mcp-server.js"
+      ],
+      "task_cid": "sha256:c9261ebdc7a2086cb18c98046bfa625b64f4d0c5ca2eabe6dd4c73bec783221a",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.2.5": {
+      "id": "B.2.5",
+      "title": "Anomaly tool surface",
+      "phase": "B",
+      "requires": [
+        "A.2.3",
+        "B.2.1",
+        "B.2.2"
+      ],
+      "ref_by": [
+        "C.2.3"
+      ],
+      "files": [
+        "src/mcp-server.js"
+      ],
+      "task_cid": "sha256:c593f50a1663207bd86bf29bd259010ef9c62427bfcf2bafeb19a99f4cc7b6db",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.3.1": {
+      "id": "B.3.1",
+      "title": "`gently-cc theme` — interactive theme preview",
+      "phase": "B",
+      "requires": [],
+      "ref_by": [],
+      "files": [
+        "src/cli.js"
+      ],
+      "task_cid": "sha256:592fb265bacf269ec5f81f543c1849f6b53413cffeb8ae9d26a41fd2bded8353",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.3.2": {
+      "id": "B.3.2",
+      "title": "`gently-cc sessions` — session inspector",
+      "phase": "B",
+      "requires": [],
+      "ref_by": [
+        "C.3.1"
+      ],
+      "files": [
+        "src/cli.js"
+      ],
+      "task_cid": "sha256:4454fdad49d23214e47e24334a26e94692d5751f4e8a3b2dfb14b2bf66fcffa9",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.3.3": {
+      "id": "B.3.3",
+      "title": "`gently-cc anomalies` — anomaly inspector",
+      "phase": "B",
+      "requires": [
+        "A.2.3"
+      ],
+      "ref_by": [],
+      "files": [
+        "src/cli.js"
+      ],
+      "task_cid": "sha256:685a44d1785a055e21cd16e8ec212109dd69979b125b31b7dc82ad427b4278ac",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.3.4": {
+      "id": "B.3.4",
+      "title": "`gently-cc update` — self-update",
+      "phase": "B",
+      "requires": [
+        "A.1.3"
+      ],
+      "ref_by": [],
+      "files": [
+        "src/cli.js"
+      ],
+      "task_cid": "sha256:d1647ab5df79f3690124622385db376ed2059b302aaea2ffa4e5fd6315e2dc7f",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.3.5": {
+      "id": "B.3.5",
+      "title": "`gently-cc uninstall` — clean removal",
+      "phase": "B",
+      "requires": [],
+      "ref_by": [],
+      "files": [
+        "src/cli.js"
+      ],
+      "task_cid": "sha256:97d14dd69b84d299ec526c3794edd8de02a37aaeee10f51c0093082f91721ff3",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "B.3.6": {
+      "id": "B.3.6",
+      "title": "Shell completions",
+      "phase": "B",
+      "requires": [
+        "B.3.1",
+        "B.3.2",
+        "B.3.3",
+        "B.3.4",
+        "B.3.5"
+      ],
+      "ref_by": [],
+      "files": [
+        "completions/gently-cc.bash",
+        "completions/gently-cc.fish",
+        "completions/gently-cc.zsh"
+      ],
+      "task_cid": "sha256:f8aeb010ee75a09d7e4dfc744e489ff028063349ba77c8798db37ae429ba2ba2",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.1.1": {
+      "id": "C.1.1",
+      "title": "Add `gently-cc register` command",
+      "phase": "C",
+      "requires": [
+        "A.2.1",
+        "A.3.2"
+      ],
+      "ref_by": [
+        "C.1.2",
+        "C.1.3",
+        "C.1.4",
+        "C.1.5"
+      ],
+      "files": [
+        "src/cli.js",
+        "src/register.js"
+      ],
+      "task_cid": "sha256:949a216632a8ef094c5acd7adbf1586e308f1d0ec83746b5cf2a921d589567ba",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.1.2": {
+      "id": "C.1.2",
+      "title": "Capability hash from GRIM manifest root",
+      "phase": "C",
+      "requires": [
+        "A.3.2",
+        "C.1.1"
+      ],
+      "ref_by": [
+        "C.1.3",
+        "C.1.4"
+      ],
+      "files": [
+        "src/register.js"
+      ],
+      "task_cid": "sha256:959e943f105994767a95e5e553999fe2bc1d9f818f641732ea114453ddd85a04",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.1.3": {
+      "id": "C.1.3",
+      "title": "Store NFT address and bind identity keypair",
+      "phase": "C",
+      "requires": [
+        "A.2.1",
+        "C.1.1",
+        "C.1.2"
+      ],
+      "ref_by": [
+        "B.2.2",
+        "C.1.4",
+        "C.1.5"
+      ],
+      "files": [
+        "src/register.js",
+        "~/.gently/agent-identity.json"
+      ],
+      "task_cid": "sha256:de49de83a257166d178f65146581fab286ed02f4d3c280979a977b8bb7523182",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.1.4": {
+      "id": "C.1.4",
+      "title": "Capability verification in session-start",
+      "phase": "C",
+      "requires": [
+        "A.2.4",
+        "C.1.3"
+      ],
+      "ref_by": [],
+      "files": [
+        "hooks/session-start.js"
+      ],
+      "task_cid": "sha256:5ab3480dd6a7b690dc204b56680d61ce795c48dbc6eca1959a89b78139b1dc7c",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.2.1": {
+      "id": "C.2.1",
+      "title": "HTTP flush function",
+      "phase": "C",
+      "requires": [
+        "A.2.3",
+        "C.1.3"
+      ],
+      "ref_by": [
+        "C.2.2",
+        "C.2.3"
+      ],
+      "files": [
+        "hooks/codie-compress.js",
+        "src/ops-client.js"
+      ],
+      "task_cid": "sha256:0719f191426816740d601c86b4ddf09503732a6c209752df22e51f538df3a03f",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.2.2": {
+      "id": "C.2.2",
+      "title": "Batch mode + session-end flush",
+      "phase": "C",
+      "requires": [
+        "C.2.1"
+      ],
+      "ref_by": [
+        "C.2.3"
+      ],
+      "files": [
+        "hooks/codie-compress.js",
+        "hooks/stop.js"
+      ],
+      "task_cid": "sha256:93b628722ee05db65020faf3e08c3080342803973288e6bccb7e137287e778aa",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.2.3": {
+      "id": "C.2.3",
+      "title": "Privacy mode",
+      "phase": "C",
+      "requires": [
+        "C.2.1"
+      ],
+      "ref_by": [],
+      "files": [
+        "src/cli.js",
+        "src/ops-client.js"
+      ],
+      "task_cid": "sha256:cefb8572e829390b1e8e9ee8e90539109eef19a534ea43b66feef4ed6064aaec",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.3.1": {
+      "id": "C.3.1",
+      "title": "Calculate SYNTH per session",
+      "phase": "C",
+      "requires": [
+        "B.3.2",
+        "C.1.3"
+      ],
+      "ref_by": [
+        "C.3.2",
+        "C.3.3"
+      ],
+      "files": [
+        "hooks/stop.js",
+        "src/synth.js"
+      ],
+      "task_cid": "sha256:35fe93ff4bb9866beb427be1e32cc6a48a71df6fcdf1fd44c3f1a7926b7ad754",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.3.2": {
+      "id": "C.3.2",
+      "title": "POST SYNTH accrual to trollz-api",
+      "phase": "C",
+      "requires": [
+        "C.1.3",
+        "C.3.1"
+      ],
+      "ref_by": [
+        "C.3.3"
+      ],
+      "files": [
+        "hooks/stop.js",
+        "src/ops-client.js"
+      ],
+      "task_cid": "sha256:1d44a60d43142b49ae3735d7a1c814428b5d2a4874e6498f2a919631090ddcce",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.3.3": {
+      "id": "C.3.3",
+      "title": "`gently-cc earnings` command",
+      "phase": "C",
+      "requires": [
+        "C.3.1",
+        "C.3.2"
+      ],
+      "ref_by": [
+        "C.3.4"
+      ],
+      "files": [
+        "src/cli.js"
+      ],
+      "task_cid": "sha256:25ca4b8a57ebe370aa34e472874489734bc6638a5f83dcf0367b19ca6c8c3ad1",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "C.3.4": {
+      "id": "C.3.4",
+      "title": "SYNTH panel in TUI dashboard",
+      "phase": "C",
+      "requires": [
+        "B.1.6",
+        "C.3.3"
+      ],
+      "ref_by": [],
+      "files": [
+        "gently-tui/src/panels/synth.rs"
+      ],
+      "task_cid": "sha256:e003d13af912025ddf72c49cbd1a191a825b330bdb048f992ab38bdee39f95c5",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "D.1.1": {
+      "id": "D.1.1",
+      "title": "Add NPM_TOKEN to GitHub secrets",
+      "phase": "D",
+      "requires": [],
+      "ref_by": [
+        "D.1.2"
+      ],
+      "files": [],
+      "task_cid": "sha256:bc8c48098ffb74b68e0d01a111f94b7e4fe5e7497be86228c86ec82b254eaa0b",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "D.1.2": {
+      "id": "D.1.2",
+      "title": "Verify end-to-end release pipeline",
+      "phase": "D",
+      "requires": [
+        "A.1.2",
+        "A.3.4",
+        "D.1.1"
+      ],
+      "ref_by": [
+        "D.1.3",
+        "D.1.4"
+      ],
+      "files": [
+        ".github/workflows/release.yml"
+      ],
+      "task_cid": "sha256:650958ae33d46af3e9224b97ecda54044274f56b610977c19ec386a5f6ac6736",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "D.1.3": {
+      "id": "D.1.3",
+      "title": "npm provenance",
+      "phase": "D",
+      "requires": [
+        "A.1.1",
+        "D.1.2"
+      ],
+      "ref_by": [
+        "D.1.4"
+      ],
+      "files": [
+        ".github/workflows/release.yml"
+      ],
+      "task_cid": "sha256:86acd0398c407d55576017f68e9ec5754eb6c460419a9f58fe1eaa514e6edcd3",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    },
+    "D.1.4": {
+      "id": "D.1.4",
+      "title": "Install integrity end-to-end test",
+      "phase": "D",
+      "requires": [
+        "A.1.4",
+        "A.3.3",
+        "D.1.3"
+      ],
+      "ref_by": [],
+      "files": [
+        ".github/workflows/ci.yml"
+      ],
+      "task_cid": "sha256:b50c9c066fba0171288bca89f38334a1ce602e646810cf30f9bac17696109f6d",
+      "output_cid": null,
+      "claimed_by": null,
+      "completed": false
+    }
+  }
+}

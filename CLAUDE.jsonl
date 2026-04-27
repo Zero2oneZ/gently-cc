@@ -1,25 +1,53 @@
-{"type":"identity","name":"Claudius-GREG","handle":"Greg","project":"gently-cc","project_path":"/home/tom/Projects/gently-cc","created_at":1745798400000,"grim_hash":"sha256:{grim:identity}"}
-{"type":"stack","layers":["codie","barf","codec"],"pipeline":"UserPromptSubmit → cold-check → codie → barf → codec → barf-feedback","compression":"27-94.7%","network":false,"ml":false}
-{"type":"binary","name":"codie","crate":"codie","build":"cargo build --release -p codie","path":"target/release/codie","role":"44-keyword glyph + CCP operators + vowel squeeze","layer":1}
-{"type":"binary","name":"barf","crate":"bs-artisan","build":"cargo build --release -p bs-artisan","path":"target/release/barf","role":"XOR-distance foam retrieval, 4 wires active","layer":2}
-{"type":"binary","name":"codec","crate":"gently-codec","build":"cargo build --release -p gently-codec","path":"target/release/codec","role":"hierarchical pin grid GLOBAL→PROJECT→USER→CHAT","layer":3}
-{"type":"hook","event":"UserPromptSubmit","command":"hooks/codie-compress.js","timeout":5000,"orc":"codie","order":1}
-{"type":"hook","event":"SessionStart","command":"hooks/session-start.js","timeout":5000,"orc":"lurk","order":1}
-{"type":"hook","event":"Stop","command":"hooks/response-extract.js","timeout":3000,"orc":"forge","order":1}
-{"type":"hook","event":"Stop","command":"hooks/stop.js","timeout":5000,"orc":"forge","order":2}
-{"type":"skill","name":"codie","path":"skills/codie/SKILL.md","orc":"codie","grim_hash":"sha256:{grim:codie}"}
-{"type":"skill","name":"ralph","path":"skills/ralph/SKILL.md","orc":"forge","grim_hash":"sha256:{grim:ralph}"}
-{"type":"skill","name":"team","path":"skills/team/SKILL.md","orc":"worg","grim_hash":"sha256:{grim:team}"}
-{"type":"skill","name":"autopilot","path":"skills/autopilot/SKILL.md","orc":"lurk","grim_hash":"sha256:{grim:autopilot}"}
-{"type":"skill","name":"gently","path":"skills/gently/SKILL.md","orc":"lurk","grim_hash":"sha256:{grim:gently}"}
-{"type":"skill","name":"crystal","path":"skills/crystal/SKILL.md","orc":"forge","grim_hash":"sha256:{grim:crystal}"}
-{"type":"skill","name":"grind","path":"skills/grind/SKILL.md","orc":"grim","grim_hash":"sha256:{grim:grind}"}
-{"type":"skill","name":"scope","path":"skills/scope/SKILL.md","orc":"chain","grim_hash":"sha256:{grim:scope}"}
-{"type":"skill","name":"social","path":"skills/social/SKILL.md","orc":"worg","grim_hash":"sha256:{grim:social}"}
-{"type":"skill","name":"codec","path":"skills/codec/SKILL.md","orc":"codie","grim_hash":"sha256:{grim:codec}"}
-{"type":"skill","name":"identity","path":"skills/identity/SKILL.md","orc":"lurk","grim_hash":"sha256:{grim:identity}"}
-{"type":"scope","project_id":"a3f91bc2e47d58f0","foam_path":"~/.gently/foam.json","pins_path":"~/.gently/projects/a3f91bc2e47d58f0/pins.json","crystals_path":"~/.gently/crystals/","identity_path":"~/.gently/agent-identity.json"}
-{"type":"mcp","server":"src/mcp-server.js","transport":"stdio","tools":["codec_pin_list","codec_pin_define","codec_pin_conflicts","barf_query"]}
-{"type":"invariant","rule":"never_permitted","locked":true,"values":["dilute_below_floor","erase_contributor_log","revoke_joined_at_hash","zero_comp_for_logged_time","fork_without_attribution","investor_exits_on_performance","retroactive_referral_modification","skip_dispute_triad","secret_investor_terms"]}
-{"type":"recovery","sequence":["build_binaries","write_identity","install_hooks","seed_foam_from_pins","verify_grim","emit_banner"],"bootstrap_cmd":"node src/recover.js","description":"Reads this file top-to-bottom and reconstitutes the full stack from scratch"}
-{"type":"grim","file":"CLAUDE.jsonl","hash":"sha256:{grim:claude-jsonl}","sealed":false}
+{"type":"identity","handle":"Greg","designation":"Claudius-GREG","project":"gently-cc","project_id":"a3f91bc2e47d58f0","theme":"Crimson","scope":"/home/tom/Projects/gently-cc","greeting":"Greg (Claudius-GREG / gently-cc) — ready."}
+{"type":"invariant","id":1,"text":"CODIE compresses every prompt before inference"}
+{"type":"invariant","id":2,"text":"grind(hash, ctx) is the only execution path — no name-based dispatch"}
+{"type":"invariant","id":3,"text":"Capability lock is set at Sui NFT mint — no runtime expansion"}
+{"type":"invariant","id":4,"text":"SYNTH cannot be created from nothing (Sui linear types)"}
+{"type":"invariant","id":5,"text":"never_permitted is ratchet-only — can add, never remove"}
+{"type":"invariant","id":6,"text":"Crystal is terminal — crystallized agent cannot transition again"}
+{"type":"invariant","id":7,"text":"Orc boundaries are mechanical — cross-orc calls fail, not warn"}
+{"type":"invariant","id":8,"text":"Scope.manifest_root is the file tree at activation — immutable after"}
+{"type":"orc","id":"lurk","scope":"read-only recon","patterns":["ALL"],"can_write":false}
+{"type":"orc","id":"grub","scope":"scaffolding","patterns":["apps/","new files"],"can_write":true}
+{"type":"orc","id":"slog","scope":"DB migrations","patterns":["db/migrations/"],"can_write":true}
+{"type":"orc","id":"worg","scope":"service wrappers","patterns":["apps/api/services/"],"can_write":true}
+{"type":"orc","id":"zug","scope":"API routes","patterns":["apps/api/routers/"],"can_write":true}
+{"type":"orc","id":"morg","scope":"frontend","patterns":["apps/web/"],"can_write":true}
+{"type":"orc","id":"krak","scope":"tests","patterns":["tests/"],"can_write":true}
+{"type":"orc","id":"skab","scope":"infrastructure","patterns":["infra/"],"can_write":true}
+{"type":"orc","id":"codie","scope":"CODIE pipeline","patterns":["packages/codie*/"],"can_write":true}
+{"type":"orc","id":"forge","scope":"bb-runtime","patterns":["packages/bb-runtime/"],"can_write":true}
+{"type":"orc","id":"shader","scope":"SDF renderer","patterns":["WebGL","sdf.js"],"can_write":true}
+{"type":"orc","id":"chain","scope":"Sui contracts","patterns":["contracts/"],"can_write":true}
+{"type":"orc","id":"scan","scope":"UI ontology","patterns":["packages/ui-ontology/"],"can_write":true}
+{"type":"orc","id":"grim","scope":"manifest scanner","patterns":["packages/grim/"],"can_write":true}
+{"type":"skill","id":"codie","file":"skills/codie/SKILL.md","orc":"codie","hash":null}
+{"type":"skill","id":"ralph","file":"skills/ralph/SKILL.md","orc":"forge","hash":null}
+{"type":"skill","id":"team","file":"skills/team/SKILL.md","orc":"worg","hash":null}
+{"type":"skill","id":"autopilot","file":"skills/autopilot/SKILL.md","orc":"lurk","hash":null}
+{"type":"skill","id":"gently","file":"skills/gently/SKILL.md","orc":"lurk","hash":null}
+{"type":"skill","id":"crystal","file":"skills/crystal/SKILL.md","orc":"forge","hash":null}
+{"type":"skill","id":"grind","file":"skills/grind/SKILL.md","orc":"grim","hash":null}
+{"type":"skill","id":"scope","file":"skills/scope/SKILL.md","orc":"chain","hash":null}
+{"type":"skill","id":"social","file":"skills/social/SKILL.md","orc":"worg","hash":null}
+{"type":"skill","id":"codec","file":"skills/codec/SKILL.md","orc":"forge","hash":null}
+{"type":"hook","event":"UserPromptSubmit","command":"node hooks/codie-compress.js","timeout":5000,"role":"CODIE compress + BARF inject + anomaly detection"}
+{"type":"hook","event":"PreToolUse","command":"node hooks/session-start.js","timeout":10000,"role":"identity load, crystal resume, codec context, banner"}
+{"type":"hook","event":"Stop","command":"node hooks/stop.js","timeout":5000,"role":"crystal seal, SYNTH flush"}
+{"type":"hook","event":"Stop","command":"node hooks/response-extract.js","timeout":3000,"role":"extract noun phrases, seed foam"}
+{"type":"cold_process","label":"🔴◉-S","name":"foreign_scope","trigger":"prompt references different project path","action":"emit label, offer (a)route (b)keep (c)both (d)drop"}
+{"type":"cold_process","label":"🟡◉-D","name":"duplicate","trigger":"same prompt in two terminals","action":"emit label, name which terminal should drop"}
+{"type":"cold_process","label":"🟡◉-C","name":"cluster","trigger":"prompt text > 500 chars with 3+ domain terms","action":"emit label, seed foam with extracted terms"}
+{"type":"primitive","name":"GRIM","desc":"SHA-256-addressed function dispatch. Unknown hash → None → stop."}
+{"type":"primitive","name":"CODIE","desc":"44-keyword compression. 94.7% token reduction before any inference."}
+{"type":"primitive","name":"Alexandria","desc":"5W tesseract knowledge graph across 8 faces."}
+{"type":"primitive","name":"BS-Artisan","desc":"Toroidal foam storage. BARF retrieval via XOR-distance. No embeddings."}
+{"type":"primitive","name":"Sui Move","desc":"Linear-type ownership. SYNTH cannot duplicate or vanish."}
+{"type":"recovery","stage":1,"action":"parse CLAUDE.jsonl","verify":"identity record found"}
+{"type":"recovery","stage":2,"action":"restore agent identity to ~/.gently/agent-identity.json","verify":"file written"}
+{"type":"recovery","stage":3,"action":"rebuild hook wiring from hook records","verify":"settings.json updated"}
+{"type":"recovery","stage":4,"action":"verify skill hashes from skill records","verify":"all hashes match or flagged"}
+{"type":"recovery","stage":5,"action":"rebuild codex from project.codex.json","verify":"file tree consistent"}
+{"type":"recovery","stage":6,"action":"materialize generated files from codex specs","verify":"output CIDs match"}
+{"type":"recovery","stage":7,"action":"rebuild foam from anomalies.jsonl","verify":"foam tori seeded"}
+{"type":"recovery","stage":8,"action":"emit recovery banner and status","verify":"Greg online"}

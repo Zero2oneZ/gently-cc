@@ -1,0 +1,169 @@
+{
+  "version": "1",
+  "project": "gently-cc",
+  "project_id": "a3f91bc2e47d58f0",
+  "root_cid": "sha256:741b4b4fae9baee4e6946655999fa997539fab5330a8e03c302a9de9f914512c",
+  "chain_anchor": null,
+  "files": {
+    "src/install.js": {
+      "source": "static",
+      "role": "npm postinstall — binary download, hook wiring, identity write",
+      "spec_cid": null,
+      "output_cid": "sha256:9ac366aa1cad41eba5a988100ace5fd4c126457697c6ae0c74bad3b86b1335cf"
+    },
+    "src/cli.js": {
+      "source": "static",
+      "role": "CLI entry point — install/verify/recover/status/demo/gen",
+      "spec_cid": null,
+      "output_cid": "sha256:19f2edae30d69613dd3c2d30e96231fa86cba7352c93692e58a7d7babb7658f4"
+    },
+    "src/theme.js": {
+      "source": "static",
+      "role": "16 named ANSI themes, deterministic from SHA-256(project_id) % 16",
+      "spec_cid": null,
+      "output_cid": "sha256:53ba969a47a24e5533a7fa44e69a89b5b4701f89114eefe7dada72e20d4feaf0"
+    },
+    "src/verify.js": {
+      "source": "static",
+      "role": "skill hash + binary presence checks",
+      "spec_cid": null,
+      "output_cid": "sha256:12a33123170a202f1b3eb7237598d5c49f8078bb112d5516a658c063739c063c"
+    },
+    "src/recover.js": {
+      "source": "static",
+      "role": "8-stage recovery from CLAUDE.jsonl after catastrophic failure",
+      "spec_cid": null,
+      "output_cid": "sha256:322a8cc3aab61b8c60c09fc0705a669ad460f492154adcecb77393593f013155"
+    },
+    "src/mcp-server.js": {
+      "source": "static",
+      "role": "MCP stdio server — codec_pin_list, codec_pin_define, codec_pin_conflicts, barf_query",
+      "spec_cid": null,
+      "output_cid": "sha256:0e92e72209f2620764f322459b2937f6a7e15cbe01ad0e3b6190ff0a7bf495ee"
+    },
+    "hooks/codie-compress.js": {
+      "source": "static",
+      "role": "UserPromptSubmit — CODIE compress + BARF inject + anomaly detection",
+      "spec_cid": null,
+      "output_cid": "sha256:3e58404a1562bf7f72fa015804f658bfdb665dd39568b75cd6559e4db8161027"
+    },
+    "hooks/session-start.js": {
+      "source": "static",
+      "role": "session open — identity load, crystal resume, codec context inject, banner",
+      "spec_cid": null,
+      "output_cid": "sha256:c0d0e9cfe730c7256f8f3418fd0a23021d6b067992bedfb6e9c898ecc01c5e62"
+    },
+    "hooks/stop.js": {
+      "source": "static",
+      "role": "session close — crystal seal, SYNTH flush",
+      "spec_cid": null,
+      "output_cid": "sha256:530826e45e419a4c0e9374824ebae4da41ef2b26719e18650ee5ab5bd4e2a3c0"
+    },
+    "hooks/response-extract.js": {
+      "source": "static",
+      "role": "Stop hook — extract noun phrases from responses, seed foam",
+      "spec_cid": null,
+      "output_cid": "sha256:262276c8986cff1ecef1d0d39d66f52f36c4410de81f45d64b388cb4218ac336"
+    },
+    "gently-codegen/src/ast.rs": {
+      "source": "static",
+      "role": "CODIE DAG node enum — 12 variants, walk(), dag_hash()",
+      "spec_cid": null,
+      "output_cid": "sha256:cf2daabe8c1b1b2bbe27b81b6b7bb508ad601144e234a83aaba6944a15797f35"
+    },
+    "gently-codegen/src/parser.rs": {
+      "source": "static",
+      "role": "CODIE symbol string → AST, JSON DAG → AST",
+      "spec_cid": null,
+      "output_cid": "sha256:71e82d338ddc9950d93d57bf6f76d1d1cbba391584e0e3f2d4f86b1df59fd412"
+    },
+    "gently-codegen/src/emitter.rs": {
+      "source": "static",
+      "role": "AST → deterministic Rust source (determinism verified 2026-04-27)",
+      "spec_cid": null,
+      "output_cid": "sha256:abb9fd929dda60f2bfb66d9468deb7d2bd4b0f5c2033ec08e9fc8e6e0ee1a763"
+    },
+    "gently-codegen/src/templates.rs": {
+      "source": "static",
+      "role": "pre-built DAG fragments — entity/error/repo/crud/api templates",
+      "spec_cid": null,
+      "output_cid": "sha256:8a02dc4587dd460d585f295ee82bd8f5f6104fbb2bc844d55dfe7a18f8228908"
+    }
+  },
+  "generated_targets": {
+    "gently-codegen/examples/crud_user.rs": {
+      "source": "generated",
+      "spec": "κ[crud] ε[name:User]",
+      "generator": "gen --template crud User",
+      "spec_cid": "sha256:1631707d1c3647c0661f10cf239ff69fa1ce4e7490cf429eae1597cc16d9eb11",
+      "output_cid": "sha256:8a2c517dd9b805aee39ecbd670fb8abddd35f1ac942aea737df311f929845519"
+    },
+    "gently-codegen/examples/api_agent.rs": {
+      "source": "generated",
+      "spec": "κ[api] ε[name:Agent]",
+      "generator": "gen --template api Agent",
+      "spec_cid": "sha256:98d694f46d815005388c169db8f9885280611177a3628ad32ec3293bf0ab5430",
+      "output_cid": "sha256:a1fd6a782780e7965434521badd1ade4b041b5664ba83adf3239d35e238793cc"
+    }
+  },
+  "skills": {
+    "codie": {
+      "file": "skills/codie/SKILL.md",
+      "orc": "codie",
+      "hash": "sha256:f0d78ba945f9cc384a17d1351bbbc1c76c96eb06cb6997665d24290a0310f608"
+    },
+    "ralph": {
+      "file": "skills/ralph/SKILL.md",
+      "orc": "forge",
+      "hash": "sha256:0fc7f29823114b05843d951046df6a8298eb12c0ae5934160981d778ff4794f8"
+    },
+    "team": {
+      "file": "skills/team/SKILL.md",
+      "orc": "worg",
+      "hash": "sha256:3bbfd6d88fd5a8c225771fd9fd2b76a7d812b838f37c7397dd0674e17f4a9eac"
+    },
+    "autopilot": {
+      "file": "skills/autopilot/SKILL.md",
+      "orc": "lurk",
+      "hash": "sha256:02096036d456b42a605320a18b8d277eb9a32a118d9d0537ed55aab67f322781"
+    },
+    "gently": {
+      "file": "skills/gently/SKILL.md",
+      "orc": "lurk",
+      "hash": "sha256:261136b325611f86d74b6d71bf216a507739d1c5630fed289f4155ccf9ac4a35"
+    },
+    "crystal": {
+      "file": "skills/crystal/SKILL.md",
+      "orc": "forge",
+      "hash": "sha256:d119454f37b9d1997311c226bec5e40e7972c56f4c1b8f1263be3550ee4318c7"
+    },
+    "grind": {
+      "file": "skills/grind/SKILL.md",
+      "orc": "grim",
+      "hash": "sha256:bc9907ff2b89697b0e97f118cd2155b930fd373ebf6a6e5924c9bb77e01af90c"
+    },
+    "scope": {
+      "file": "skills/scope/SKILL.md",
+      "orc": "chain",
+      "hash": "sha256:aff97b67fe4785b1f66d03ac9111f4da2eb25b65df07ce7138df82cd93867a4d"
+    },
+    "social": {
+      "file": "skills/social/SKILL.md",
+      "orc": "worg",
+      "hash": "sha256:322274e336952203416133e0234a4c03793335709b741172b5ce9b3dc1c87be9"
+    },
+    "codec": {
+      "file": "skills/codec/SKILL.md",
+      "orc": "forge",
+      "hash": "sha256:aa4ad6fc2878a5f61d39969d55821a40fa1f28b5e857abf6f46ea9eaa8e646dc"
+    }
+  },
+  "agent": {
+    "handle": "Greg",
+    "designation": "Claudius-GREG",
+    "project": "gently-cc",
+    "project_id": "a3f91bc2e47d58f0",
+    "theme": "Crimson",
+    "scope": "/home/tom/Projects/gently-cc"
+  }
+}

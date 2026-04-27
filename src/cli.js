@@ -9,12 +9,17 @@ import { existsSync } from 'fs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const COMMANDS = {
-  install:  'Install hooks into ~/.claude/settings.json and build binaries',
-  verify:   'Verify skill hashes, hook wiring, and binary presence',
-  recover:  'Rebuild stack from CLAUDE.jsonl after catastrophic failure',
-  status:   'Show current agent identity, theme, and session stats',
-  demo:     'Run the multi-session demo (requires tmux)',
-  gen:      'Generate Rust code from CODIE symbol expression',
+  install:     'Install hooks into ~/.claude/settings.json and build binaries',
+  verify:      'Verify skill hashes, hook wiring, and binary presence',
+  recover:     'Rebuild stack from CLAUDE.jsonl after catastrophic failure',
+  status:      'Show current agent identity, theme, and session stats',
+  demo:        'Run the multi-session demo (requires tmux)',
+  gen:         'Generate Rust code from CODIE symbol expression',
+  materialize: 'Hash/generate all files in project.codex.json  [--verify]',
+  plan:        'Parse PLAN.md into CID DAG and write plan.dag.json',
+  anchor:      'Anchor root CID on Sui: gently-cc anchor <root_cid>',
+  clone:       'Materialize project from CID: gently-cc clone <root_cid>',
+  claim:       'Claim a task locally: gently-cc claim <task_cid>',
 };
 
 async function main() {
@@ -76,6 +81,36 @@ async function main() {
       const r = spawnSync(genBin, [expr], { stdio: 'inherit' });
       process.exit(r.status ?? 0);
     }
+
+    case 'materialize':
+      await import('./materialize.js');
+      break;
+
+    case 'plan':
+      await import('./plan.js');
+      break;
+
+    case 'anchor': {
+      const rootCid = args[0];
+      if (!rootCid) { console.error('  Usage: gently-cc anchor <root_cid>\n'); process.exit(1); }
+      await (await import('./anchor.js')).anchor(rootCid);
+      break;
+    }
+
+    case 'clone': {
+      const rootCid = args[0];
+      if (!rootCid) { console.error('  Usage: gently-cc clone <root_cid>\n'); process.exit(1); }
+      await (await import('./clone.js')).clone(rootCid);
+      break;
+    }
+
+    case 'claim': {
+      const taskCid = args[0];
+      if (!taskCid) { console.error('  Usage: gently-cc claim <task_cid>\n'); process.exit(1); }
+      await (await import('./claim.js')).claim(taskCid);
+      break;
+    }
+
     default:
       console.error(`  Unknown command: ${cmd}\n  Run: gently-cc --help\n`);
       process.exit(1);
