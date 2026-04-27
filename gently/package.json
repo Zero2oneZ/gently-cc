@@ -1,0 +1,26 @@
+{
+  "name": "gently",
+  "version": "0.1.0",
+  "description": "Universal agentic CLI — CODIE compression + BARF memory on top of any LLM. Claude, GPT-4o, or anything OpenAI-compatible. Bring your own key.",
+  "author": "Zero2OneZ <tomlee3ddesign@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "ai", "cli", "llm", "claude", "openai", "gpt", "agents",
+    "token-compression", "codie", "memory", "tui", "agentic"
+  ],
+  "homepage": "https://gentlyos.io",
+  "repository": { "type": "git", "url": "https://github.com/zero2onez/gently-cc" },
+  "type": "module",
+  "bin": { "gently": "src/cli.js" },
+  "files": ["src/", "PROVIDER.md"],
+  "scripts": {
+    "chat":    "node src/cli.js chat",
+    "launch":  "node src/cli.js launch",
+    "test":    "node --test src/__tests__/"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.37.0",
+    "openai":            "^4.77.0"
+  }
+}
